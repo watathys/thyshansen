@@ -1,32 +1,23 @@
-import { site } from "@/content/site";
 import { Container } from "@/components/layout/container";
-import { ButtonLink } from "@/components/ui/button-link";
+import { SectionHeading } from "@/components/ui/section-heading";
+import { ContactButtons } from "@/components/sections/contact-buttons";
+import { ContactForm } from "@/components/sections/contact-form";
 
 export function Contact() {
   return (
     <section id="contact" className="border-t border-border py-20 sm:py-24">
-      <Container className="flex flex-col items-start gap-6">
-        <div>
-          <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-            Let&apos;s talk product.
-          </h2>
-          <p className="mt-3 max-w-md text-base leading-relaxed text-muted">
-            Open to product management internships and new-grad roles. The
-            fastest way to reach me is email.
-          </p>
+      <Container className="space-y-12">
+        <div className="flex flex-col items-start gap-6">
+          <SectionHeading
+            eyebrow="Contact"
+            title="Let's talk product."
+            description="Open to product management internships and full-time roles. The fastest way to reach me is email, LinkedIn, or the direct form below."
+          />
+          <ContactButtons />
         </div>
-        <div className="flex flex-wrap items-center gap-4">
-          <ButtonLink href={`mailto:${site.email}`}>
-            {site.email}
-          </ButtonLink>
-          <ButtonLink href={site.linkedin} variant="secondary">
-            LinkedIn
-          </ButtonLink>
-          {site.instagram ? (
-            <ButtonLink href={site.instagram} variant="secondary">
-              Instagram
-            </ButtonLink>
-          ) : null}
+
+        <div className="max-w-2xl">
+          <ContactForm />
         </div>
       </Container>
     </section>

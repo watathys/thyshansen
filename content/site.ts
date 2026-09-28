@@ -167,7 +167,8 @@ export const site: SiteContent = {
     { label: "Work", href: "/#work" },
     { label: "Creative", href: "/#creative" },
     { label: "About", href: "/#about" },
-    { label: "Resume", href: "/#resume" },
+    { label: "Experience", href: "/#experience" },
+    { label: "Resume", href: "/resume" },
     { label: "Contact", href: "/#contact" },
   ],
 
@@ -296,14 +297,39 @@ export const site: SiteContent = {
 
   experience: [
     {
-      company: "Wheatley Institute",
-      role: "Video Producer & Channel Lead",
+      company: "Junbi — BYU Sandbox Incubator",
+      role: "Co-Founder & CEO",
       location: "Provo, UT",
-      startDate: "2023",
+      startDate: "Jan 2026",
       endDate: "Present",
       bullets: [
-        "Produced, edited, and distributed high-impact academic and social video content.",
-        "Grew the Wheatley Institute YouTube channel by 2,800+ subscribers and 82,000+ views through targeted editing and SEO.",
+        "Conceived, designed, and built an AI study-podcast platform from the ground up, owning product strategy, full-stack engineering, AI pipeline, database, authentication, and deployment using Vercel, Cursor, Xcode, SQL, and Supabase.",
+        "Ran a targeted campus marketing campaign, turning 20 hours and a $30 budget into 4,000+ active users and 700+ registered accounts across 50+ universities with a $0.05 CAC.",
+        "Secured $2,500 in institutional funding and pitched a product partnership and acquisition directly to Quizlet’s CFO.",
+      ],
+    },
+    {
+      company: "Independent E-Commerce Ventures",
+      role: "Founder",
+      location: "Provo, UT",
+      startDate: "Mar 2020",
+      endDate: "Present",
+      bullets: [
+        "Launched and operated 3 direct-to-consumer brands (Chalant Clothes, Kazzi Soda, and Tokyo Treasures), generating $4,400+ revenue with 100% positive reviews.",
+        "Amplified brand reach by designing and executing Meta ads across 5 universities, achieving $0.21–$0.29 CPC on 500+ clicks.",
+        "Scaled to 170,000+ organic views on YouTube and TikTok and developed B2B wholesale partnerships with retail stores.",
+      ],
+    },
+    {
+      company: "Wheatley Institute, BYU",
+      role: "Videography & Photography Lead",
+      location: "Provo, UT",
+      startDate: "Dec 2024",
+      endDate: "Jan 2026",
+      bullets: [
+        "Directed photography and social media content strategy, growing channel subscribers by 2,800+ and driving 82,000+ views.",
+        "Photographed high-profile events featuring Senator Mitt Romney, with work published in BYU Marriott School News and The Deseret News.",
+        "Managed end-to-end video production and media workflows in Adobe Premiere Pro, DaVinci Resolve, Photoshop, After Effects, and Lightroom.",
       ],
     },
   ],
