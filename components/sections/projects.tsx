@@ -13,29 +13,31 @@ export function Projects({
   showHeading?: boolean;
   showViewAll?: boolean;
 }) {
-  const projects = limit ? site.projects.slice(0, limit) : site.projects;
+  const projectsList = limit ? site.projects.slice(0, limit) : site.projects;
 
   return (
     <section id="work" className="border-t border-border py-20 sm:py-24">
       <Container>
         {showHeading ? (
-          <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-            <SectionHeading
-              eyebrow="Work"
-              title="Things I've built"
-              description="A mix of shipped products, side projects, and experiments — spanning software and physical products."
-            />
-          </div>
+          <SectionHeading
+            eyebrow="Work"
+            title="Selected Work"
+            description="Products conceived, designed, and shipped across AI software, mobile apps, and physical consumer products."
+          />
         ) : null}
 
-        <div className="mt-10 grid gap-6 sm:grid-cols-2">
-          {projects.map((project) => (
-            <ProjectCard key={project.slug} project={project} />
+        <div className="mt-10 grid gap-8 sm:grid-cols-2">
+          {projectsList.map((project) => (
+            <ProjectCard
+              key={project.slug}
+              project={project}
+              isFeatured={Boolean(project.featured)}
+            />
           ))}
         </div>
 
         {showViewAll ? (
-          <div className="mt-10">
+          <div className="mt-10 flex justify-center">
             <ButtonLink href="/projects" variant="secondary">
               View all projects
             </ButtonLink>

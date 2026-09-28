@@ -39,22 +39,38 @@ export interface Education {
   honors: string[];
 }
 
+export interface ProjectLink {
+  label: string;
+  url: string;
+}
+
 export interface Project {
-  /** URL-safe unique identifier, used for /projects/[slug] */
+  /** URL-safe unique identifier, used for /work/[slug] */
   slug: string;
   name: string;
   /** Short, punchy value proposition (~1 sentence). */
   oneLiner: string;
-  /** 2–4 sentence case-study style description: problem, role, impact. */
+  /** 2–4 sentence case-study style description. */
   description: string;
-  /** Quantified outcomes, e.g. "10k+ downloads", "Cut onboarding time 40%". */
+  /** Problem statement for case study detail page. */
+  problem: string;
+  /** What was built. */
+  whatIBuilt: string;
+  /** Role description. */
+  role: string;
+  /** Quantified outcomes & metrics. */
   metrics: string[];
-  /** Live URL, App Store link, GitHub repo, etc. Leave empty if none. */
+  /** Tech stack array. */
+  techStack: string[];
+  /** Primary live URL, App Store link, GitHub repo, etc. Leave empty if none. */
   url?: string;
-  /** Path relative to /public, e.g. "/projects/junbi.png". Optional — falls
-   * back to a clean monogram card when omitted or the file doesn't exist. */
+  /** Secondary links (e.g. TikTok, Landing Page). */
+  secondaryLinks?: ProjectLink[];
+  /** Path relative to /public, e.g. "/projects/junbi.png". Optional. */
   image?: string;
   tags: string[];
+  /** If true, rendered as a larger featured card at the top of Selected Work. */
+  featured?: boolean;
 }
 
 export interface ExperienceRole {
@@ -118,7 +134,6 @@ export const site: SiteContent = {
   resumeUrl: "/resume.pdf",
   email: "watathys@gmail.com",
   linkedin: "https://linkedin.com/in/thysh",
-  // TODO: add your Instagram URL here if desired, or leave empty
   instagram: "https://instagram.com",
   url: "https://thyshansen.com",
 
@@ -161,46 +176,95 @@ export const site: SiteContent = {
     {
       slug: "junbi",
       name: "Junbi",
-      oneLiner: "TODO: one-sentence value proposition for Junbi.",
+      featured: true,
+      oneLiner:
+        "AI-powered study-podcast platform converting notes and materials into custom audio lessons.",
       description:
-        "TODO: replace with 2–4 sentences covering the problem Junbi solves, your specific role (PM, founder, engineer, etc.), and the impact or outcome.",
-      metrics: ["TODO: e.g. 500+ users", "TODO: e.g. 4.8★ average rating"],
-      url: "",
+        "AI-powered study-podcast platform conceived, designed, and built solo. Grew to 4,000+ active users and 700+ registered accounts on a $30 budget, spread to 50+ universities, secured $2,500 in funding, and pitched Quizlet's CFO.",
+      problem:
+        "Students spend hours reading dense textbooks and notes without engaging audio alternatives that fit busy, on-the-go schedules.",
+      whatIBuilt:
+        "An AI study-podcast platform that transforms user study notes, slides, and documents into interactive audio lessons and review podcasts.",
+      role: "Founder & Solo Developer (Conceived, designed, engineered, launched, and marketed independently).",
+      metrics: [
+        "4,000+ Active Users",
+        "700+ Registered Accounts",
+        "50+ Universities Reached",
+        "$2,500 Funding Secured",
+        "$0.05 CAC",
+      ],
+      techStack: ["Next.js", "Supabase", "Vercel", "Xcode / Swift", "AI Audio APIs"],
+      url: "https://junbi.study",
       image: "/projects/junbi.png",
-      tags: ["Product", "TODO"],
+      tags: ["AI Audio", "Full Stack", "Product Strategy", "iOS & Web"],
     },
     {
-      slug: "journal-app",
-      name: "Journal App",
-      oneLiner: "TODO: one-sentence value proposition for the Journal App.",
+      slug: "bookends",
+      name: "Bookends",
+      featured: false,
+      oneLiner:
+        "A private, AI-guided journal that turns your unfiltered daily brain dump into a clear narrative, auditing your life to surface priorities.",
       description:
-        "TODO: replace with 2–4 sentences covering the problem this journaling app solves, your role, the stack, and any measurable impact.",
-      metrics: ["TODO: e.g. 1k+ downloads", "TODO: e.g. 30% weekly retention"],
-      url: "",
-      image: "/projects/journal-app.png",
-      tags: ["Mobile", "TODO"],
+        "A private, AI-guided voice journal that turns your unfiltered daily brain dump into a clear narrative, auditing your life to surface hidden patterns, shifts, and priorities.",
+      problem:
+        "Traditional text journaling requires friction-heavy effort and rarely synthesizes long-term personal growth or actionable trends.",
+      whatIBuilt:
+        "An AI-powered voice journaling application that transcribes spoken thoughts into structured narratives and automatically audits key recurring life themes.",
+      role: "Product Manager & Full Stack Engineer",
+      metrics: [
+        "AI Voice Processing",
+        "Automated Life Audit",
+        "Daily Narrative Generation",
+      ],
+      techStack: ["Next.js", "React Native", "AI Voice LLM", "Tailwind CSS"],
+      url: "https://genfm.app",
+      image: "/projects/bookends.png",
+      tags: ["AI Voice", "Mobile & Web", "Personal Analytics"],
     },
     {
       slug: "games",
-      name: "Games",
-      oneLiner: "TODO: one-sentence value proposition for this project.",
+      name: "AI Party Games",
+      featured: false,
+      oneLiner:
+        "Two AI-powered interactive social party games: Arena Games and Pitch-a-Biz.",
       description:
-        "TODO: replace with 2–4 sentences describing the game(s) you built, your role, tools used, and any notable results (players, ratings, awards).",
-      metrics: ["TODO: e.g. 10k+ plays", "TODO: e.g. Built in 48 hours"],
+        "Designed and engineered two AI-powered party games — Arena Games and Pitch-a-Biz — blending dynamic LLM prompting with multiplayer social mechanics.",
+      problem:
+        "Standard board and party games can become repetitive and lack real-time adaptability to player choices and humorous edge cases.",
+      whatIBuilt:
+        "Two distinct AI party games: 'Arena Games' (a prompt battle arena) and 'Pitch-a-Biz' (an AI-judged rapid business pitch game).",
+      role: "Game Designer & Lead Developer",
+      metrics: ["2 Original AI Games", "Interactive LLM Judge", "Rapid Prototype"],
+      techStack: ["Next.js", "TypeScript", "LLM APIs", "Tailwind CSS"],
       url: "",
       image: "/projects/games.png",
-      tags: ["Game Dev", "TODO"],
+      tags: ["Game Dev", "AI Prompting", "Multiplayer"],
     },
     {
       slug: "kazzi-soda",
       name: "Kazzi Soda",
-      oneLiner: "TODO: one-sentence value proposition for Kazzi Soda.",
+      featured: false,
+      oneLiner:
+        "Dirty soda recipe card decks paired with an organic social video marketing strategy.",
       description:
-        "TODO: replace with 2–4 sentences on the business concept, your role (product, ops, marketing, etc.), and quantified traction.",
-      metrics: ["TODO: e.g. $10k in pre-orders", "TODO: e.g. 3 retail partners"],
-      url: "",
+        "Dirty soda recipe card decks. Built the landing page at homesodabar.com and led the social video strategy, shooting and editing every video for TikTok.",
+      problem:
+        "Beverage enthusiasts want popular dirty soda recipes at home, but lack curated physical recipe guides and engaging video tutorials.",
+      whatIBuilt:
+        "A physical dirty soda recipe card deck, e-commerce landing page, and an organic TikTok content campaign.",
+      role: "Product Creator & Content Director (Shot and edited every promotional video, managed physical production, and built the storefront).",
+      metrics: [
+        "100% Shot & Edited Videos",
+        "170K+ Organic TikTok Views",
+        "D2C Storefront Launched",
+      ],
+      techStack: ["Shopify", "Final Cut Pro / Premiere", "TikTok Creator Suite"],
+      url: "https://homesodabar.com",
+      secondaryLinks: [
+        { label: "TikTok", url: "https://www.tiktok.com/@kazzisoda" },
+      ],
       image: "/projects/kazzi-soda.png",
-      tags: ["Consumer", "TODO"],
+      tags: ["Consumer Product", "Content Strategy", "E-Commerce", "Video Production"],
     },
   ],
 
