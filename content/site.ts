@@ -94,6 +94,31 @@ export interface Video {
   title: string;
   youtubeId: string;
   description?: string;
+  category?: string;
+  isShort?: boolean;
+}
+
+export interface TikTokVideo {
+  title: string;
+  url: string;
+  isYouTubeShort?: boolean;
+  youtubeId?: string;
+}
+
+export interface VideographyInfo {
+  tools: string[];
+  wheatleyImpact: {
+    title: string;
+    description: string;
+    subscribersGained: string;
+    viewsGained: string;
+  };
+  kazziTikTok: {
+    handle: string;
+    profileUrl: string;
+    note: string;
+    videos: TikTokVideo[];
+  };
 }
 
 export interface SiteContent {
@@ -117,6 +142,7 @@ export interface SiteContent {
   experience: ExperienceRole[];
   photos: Photo[];
   videos: Video[];
+  videography: VideographyInfo;
 }
 
 // ---------------------------------------------------------------------------
@@ -270,15 +296,14 @@ export const site: SiteContent = {
 
   experience: [
     {
-      company: "TODO: Company Name",
-      role: "TODO: Job Title",
-      location: "TODO: City, ST",
-      startDate: "TODO: Mon YYYY",
+      company: "Wheatley Institute",
+      role: "Video Producer & Channel Lead",
+      location: "Provo, UT",
+      startDate: "2023",
       endDate: "Present",
       bullets: [
-        "TODO: paste a bullet from your resume — lead with the action verb and quantify the result.",
-        "TODO: paste another bullet from your resume.",
-        "TODO: paste another bullet from your resume.",
+        "Produced, edited, and distributed high-impact academic and social video content.",
+        "Grew the Wheatley Institute YouTube channel by 2,800+ subscribers and 82,000+ views through targeted editing and SEO.",
       ],
     },
   ],
@@ -325,7 +350,71 @@ export const site: SiteContent = {
       caption: "Shibuya, Tokyo — Late night subway platform line.",
     },
   ],
-  videos: [],
+
+  videos: [
+    {
+      title: "Wheatley Institute Feature Production 1",
+      youtubeId: "fKAnp7L7uqI",
+      description: "Edited and produced for the Wheatley Institute research channel.",
+      category: "Documentary & Academic",
+    },
+    {
+      title: "Wheatley Institute Feature Production 2",
+      youtubeId: "FhDnQcuPK7Q",
+      description: "Higher education research highlight and commentary feature.",
+      category: "Documentary & Academic",
+    },
+    {
+      title: "Wheatley Institute Feature Production 3",
+      youtubeId: "8C2mmAkzrWo",
+      description: "Produced and edited narrative short for academic outreach.",
+      category: "Documentary & Academic",
+    },
+    {
+      title: "Wheatley Institute Feature Production 4",
+      youtubeId: "VbL6OZFTNAw",
+      description: "Event highlights and scholar interview production.",
+      category: "Documentary & Academic",
+    },
+  ],
+
+  videography: {
+    tools: [
+      "Premiere Pro",
+      "DaVinci Resolve",
+      "After Effects",
+      "Photoshop",
+      "Lightroom",
+    ],
+    wheatleyImpact: {
+      title: "Wheatley Institute Production Impact",
+      description:
+        "Led video editing, pacing, and channel optimization strategy for academic, policy, and research content.",
+      subscribersGained: "2,800+",
+      viewsGained: "82,000+",
+    },
+    kazziTikTok: {
+      handle: "@kazzisoda",
+      profileUrl: "https://www.tiktok.com/@kazzisoda",
+      note: "I shot and edited every video for Kazzi Soda — generating over 170,000 organic views on TikTok.",
+      videos: [
+        {
+          title: "Kazzi Soda TikTok Highlight 1",
+          url: "https://www.tiktok.com/@kazzisoda/video/7639798403756576014",
+        },
+        {
+          title: "Kazzi Soda TikTok Highlight 2",
+          url: "https://www.tiktok.com/@kazzisoda/video/7623116180273876255",
+        },
+        {
+          title: "Kazzi Soda Short Recipe Feature",
+          url: "https://www.youtube.com/shorts/_9e2NMAVckU",
+          isYouTubeShort: true,
+          youtubeId: "_9e2NMAVckU",
+        },
+      ],
+    },
+  },
 };
 
 export default site;
