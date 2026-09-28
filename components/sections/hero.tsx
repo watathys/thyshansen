@@ -4,7 +4,7 @@ import { ButtonLink } from "@/components/ui/button-link";
 
 export function Hero() {
   return (
-    <section className="py-24 sm:py-32">
+    <section id="top" className="py-24 sm:py-32">
       <Container>
         <p className="mb-4 text-sm font-medium uppercase tracking-wide text-accent">
           {site.education.school}
@@ -16,7 +16,7 @@ export function Hero() {
           {site.tagline}
         </p>
         <div className="mt-10 flex flex-wrap items-center gap-4">
-          <ButtonLink href="/projects">View projects</ButtonLink>
+          <ButtonLink href="/#work">View work</ButtonLink>
           <ButtonLink href={`mailto:${site.email}`} variant="secondary">
             Get in touch
           </ButtonLink>

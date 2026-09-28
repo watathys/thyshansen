@@ -19,6 +19,11 @@
 // Types
 // ---------------------------------------------------------------------------
 
+export interface NavLink {
+  label: string;
+  href: string;
+}
+
 export interface Education {
   school: string;
   degree: string;
@@ -78,6 +83,7 @@ export interface SiteContent {
   instagram: string;
   /** Deployed site URL, used for SEO metadata + sitemap. */
   url: string;
+  navLinks: NavLink[];
   education: Education;
   projects: Project[];
   experience: ExperienceRole[];
@@ -99,6 +105,14 @@ export const site: SiteContent = {
   instagram: "",
   // TODO: replace with your live domain once deployed (used for SEO + sitemap).
   url: "https://thyshansen.com",
+
+  navLinks: [
+    { label: "Work", href: "/#work" },
+    { label: "Creative", href: "/#creative" },
+    { label: "About", href: "/#about" },
+    { label: "Resume", href: "/#resume" },
+    { label: "Contact", href: "/#contact" },
+  ],
 
   education: {
     school: "BYU Marriott School of Business",

@@ -1,20 +1,39 @@
 @import "tailwindcss";
 
-/*
- * Design tokens for the whole site.
- * One neutral palette (zinc, used via Tailwind's built-in scale) plus a
- * single accent color defined here. Change --color-accent to re-skin the
- * entire site's links, buttons, and highlights in one place.
- */
-@theme inline {
-  --color-background: #ffffff;
-  --color-foreground: #18181b; /* zinc-900 */
-  --color-muted: #71717a; /* zinc-500 */
-  --color-border: #e4e4e7; /* zinc-200 */
+:root {
+  --background: #ffffff;
+  --foreground: #18181b; /* zinc-900 */
+  --muted: #71717a; /* zinc-500 */
+  --border: #e4e4e7; /* zinc-200 */
+  --card-bg: #f4f4f5; /* zinc-100 */
 
   /* Single accent color used sparingly: links, primary buttons, focus rings. */
-  --color-accent: #2563eb; /* blue-600 */
-  --color-accent-foreground: #ffffff;
+  --accent: #2563eb; /* blue-600 */
+  --accent-foreground: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #09090b; /* zinc-950 */
+    --foreground: #f4f4f5; /* zinc-100 */
+    --muted: #a1a1aa; /* zinc-400 */
+    --border: #27272a; /* zinc-800 */
+    --card-bg: #18181b; /* zinc-900 */
+
+    --accent: #3b82f6; /* blue-500 */
+    --accent-foreground: #ffffff;
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-card-bg: var(--card-bg);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -22,19 +41,20 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
 }
 
 body {
   background-color: var(--color-background);
   color: var(--color-foreground);
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 ::selection {
   background-color: color-mix(in srgb, var(--color-accent) 25%, transparent);
 }
 
-/* Respect users who've asked for reduced motion — keep even subtle
- * transitions from running for them. */
+/* Respect users who've asked for reduced motion */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

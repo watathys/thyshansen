@@ -16,14 +16,14 @@ export function Projects({
   const projects = limit ? site.projects.slice(0, limit) : site.projects;
 
   return (
-    <section id="projects" className="border-t border-border py-20 sm:py-24">
+    <section id="work" className="border-t border-border py-20 sm:py-24">
       <Container>
         {showHeading ? (
           <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
             <SectionHeading
-              eyebrow="Projects"
+              eyebrow="Work"
               title="Things I've built"
-              description="A mix of shipped products, side projects, and experiments — spanning software and a physical product."
+              description="A mix of shipped products, side projects, and experiments — spanning software and physical products."
             />
           </div>
         ) : null}
