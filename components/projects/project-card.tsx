@@ -2,7 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Project } from "@/content/site";
 import { Tag } from "@/components/ui/tag";
-import { publicFileExists, initials } from "@/lib/media";
+import { initials } from "@/lib/media";
+import { publicFileExists } from "@/lib/media-server";
 
 export function ProjectCard({
   project,

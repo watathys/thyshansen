@@ -6,7 +6,8 @@ import { site } from "@/content/site";
 import { Container } from "@/components/layout/container";
 import { Tag } from "@/components/ui/tag";
 import { ButtonLink } from "@/components/ui/button-link";
-import { publicFileExists, initials } from "@/lib/media";
+import { initials } from "@/lib/media";
+import { publicFileExists } from "@/lib/media-server";
 
 export function generateStaticParams() {
   return site.projects.map((project) => ({ slug: project.slug }));

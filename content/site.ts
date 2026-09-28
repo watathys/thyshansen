@@ -283,7 +283,48 @@ export const site: SiteContent = {
     },
   ],
 
-  photos: [],
+  photos: [
+    {
+      src: "/photography/kyoto-bamboo.jpg",
+      alt: "Kyoto bamboo forest at dawn",
+      caption: "Kyoto, Japan — Dawn light filtering through Arashiyama bamboo grove.",
+    },
+    {
+      src: "/photography/tokyo-night.jpg",
+      alt: "Tokyo street reflections at night",
+      caption: "Shinjuku, Tokyo — Neon rain reflection along alleyway.",
+    },
+    {
+      src: "/photography/wasatch-mountains.jpg",
+      alt: "Wasatch mountain range sunset",
+      caption: "Wasatch Mountains, Utah — Alpine glow at dusk.",
+    },
+    {
+      src: "/photography/tokyo-architecture.jpg",
+      alt: "Minimalist concrete urban architecture",
+      caption: "Ginza, Tokyo — Structural symmetry and concrete shadows.",
+    },
+    {
+      src: "/photography/junbi-launch.jpg",
+      alt: "Junbi app launch user testing session",
+      caption: "Junbi Launch — Early morning user feedback session at BYU.",
+    },
+    {
+      src: "/photography/big-sur-mist.jpg",
+      alt: "Coastal fog along California Highway 1",
+      caption: "Big Sur, California — Morning Pacific ocean mist.",
+    },
+    {
+      src: "/photography/soda-shoot.jpg",
+      alt: "Kazzi Soda recipe card product shoot",
+      caption: "Provo, Utah — Studio lighting for Kazzi Soda deck.",
+    },
+    {
+      src: "/photography/tokyo-subway.jpg",
+      alt: "Tokyo transit station symmetry",
+      caption: "Shibuya, Tokyo — Late night subway platform line.",
+    },
+  ],
   videos: [],
 };
 
