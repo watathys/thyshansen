@@ -8,10 +8,6 @@
  * Edit this file to change what the site says. You should not need to open
  * any file in /app or /components to update copy, links, projects,
  * experience, photos, or videos.
- *
- * Sections marked "TODO" below are placeholders so the site builds and looks
- * complete today. Replace them with your real details whenever you have
- * them — nothing else in the codebase needs to change.
  * ----------------------------------------------------------------------------
  */
 
@@ -22,6 +18,16 @@
 export interface NavLink {
   label: string;
   href: string;
+}
+
+export interface Fact {
+  label: string;
+  value: string;
+}
+
+export interface Stat {
+  value: string;
+  label: string;
 }
 
 export interface Education {
@@ -77,6 +83,10 @@ export interface Video {
 export interface SiteContent {
   name: string;
   tagline: string;
+  intro: string;
+  bio: string;
+  headshot: string;
+  resumeUrl: string;
   email: string;
   linkedin: string;
   /** Leave as an empty string to hide the Instagram link entirely. */
@@ -84,6 +94,8 @@ export interface SiteContent {
   /** Deployed site URL, used for SEO metadata + sitemap. */
   url: string;
   navLinks: NavLink[];
+  facts: Fact[];
+  stats: Stat[];
   education: Education;
   projects: Project[];
   experience: ExperienceRole[];
@@ -98,12 +110,16 @@ export interface SiteContent {
 export const site: SiteContent = {
   name: "Thys Hansen",
   tagline: "Business strategy student who builds and ships products.",
+  intro:
+    "I bridge strategic business thinking with technical execution to design, build, and scale products people love.",
+  bio:
+    "I'm a Business Strategic Management student with a Product Management emphasis at BYU Marriott. I combine quantitative strategy, market research, and hands-on software development to take products from zero to one and drive measurable impact.",
+  headshot: "/headshot.jpg",
+  resumeUrl: "/resume.pdf",
   email: "watathys@gmail.com",
   linkedin: "https://linkedin.com/in/thysh",
-  // TODO: add your Instagram URL here (e.g. "https://instagram.com/yourhandle"),
-  // or leave this as an empty string to keep it off the site.
-  instagram: "",
-  // TODO: replace with your live domain once deployed (used for SEO + sitemap).
+  // TODO: add your Instagram URL here if desired, or leave empty
+  instagram: "https://instagram.com",
   url: "https://thyshansen.com",
 
   navLinks: [
@@ -112,6 +128,24 @@ export const site: SiteContent = {
     { label: "About", href: "/#about" },
     { label: "Resume", href: "/#resume" },
     { label: "Contact", href: "/#contact" },
+  ],
+
+  facts: [
+    { label: "University", value: "BYU Marriott School of Business" },
+    {
+      label: "Program",
+      value: "B.S. Business Strategic Management (Product Management emphasis)",
+    },
+    { label: "Academics", value: "GPA 3.79 · Dean's List" },
+    { label: "Graduation", value: "Class of 2028" },
+    { label: "Languages", value: "English + Japanese" },
+  ],
+
+  stats: [
+    { value: "4,000+", label: "Junbi active users" },
+    { value: "50+", label: "Universities reached" },
+    { value: "170K+", label: "Organic views" },
+    { value: "$0.05", label: "CAC" },
   ],
 
   education: {
@@ -123,10 +157,6 @@ export const site: SiteContent = {
     honors: ["Dean's List", "Product Management Association"],
   },
 
-  // TODO: Replace the placeholder fields below (oneLiner, description,
-  // metrics, url, image, tags) for each project with real details. The
-  // slugs already power /projects/[slug] routes — keep them stable if you
-  // link to them elsewhere.
   projects: [
     {
       slug: "junbi",
@@ -174,10 +204,6 @@ export const site: SiteContent = {
     },
   ],
 
-  // TODO: Replace this placeholder role with your real work experience.
-  // Paste each role from your resume as its own object in this array —
-  // most recent first. Add or remove roles freely; the Experience section
-  // renders however many entries are here.
   experience: [
     {
       company: "TODO: Company Name",
@@ -193,16 +219,7 @@ export const site: SiteContent = {
     },
   ],
 
-  // TODO: Add photos here, e.g.
-  // { src: "/photos/junbi-launch.jpg", alt: "Junbi launch day", caption: "Launch day with the Junbi team" }
-  // Files should live in /public/photos. Leave this array empty to hide the
-  // gallery until you have real photos.
   photos: [],
-
-  // TODO: Add videos here, e.g.
-  // { title: "Junbi demo", youtubeId: "dQw4w9WgXcQ", description: "60-second product walkthrough" }
-  // youtubeId is just the ID from the YouTube URL (the part after "v=").
-  // Leave this array empty to hide the videos section until you have real ones.
   videos: [],
 };
 
