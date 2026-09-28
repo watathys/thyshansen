@@ -1,0 +1,29 @@
+# Cursor Rules for this project
+
+1. **Always read `PROJECT_CONTEXT.md` first**, before making any changes.
+   It has the project goal, stack, content model, and design rules. If it
+   conflicts with anything below, `PROJECT_CONTEXT.md` wins — update these
+   rules to match it if they drift.
+
+2. **Keep components small.** One clear purpose per file. Prefer composing
+   several small components over writing one large one. If a component
+   file is doing more than one job (e.g. layout + data formatting + a
+   client interaction), split it.
+
+3. **Use server components by default.** Only add `"use client"` when the
+   component genuinely needs browser interactivity or state that can't be
+   done with plain HTML/CSS. Keep client components small and as low in
+   the tree as possible.
+
+4. **Never hardcode content in components.** No names, copy, bios, links,
+   project data, dates, metrics, or media paths inline in JSX/TSX. All of
+   that lives in `/content/site.ts`, typed via the `SiteContent` shape
+   exported there. If new content is needed, add a field to that file's
+   types and data first, then consume it — don't shortcut with an inline
+   literal in a component.
+
+5. **Match the existing design system**: one neutral palette (Tailwind's
+   `zinc`/`border`/`muted` tokens) plus the single `--color-accent` defined
+   in `app/globals.css`. Don't add a second accent color, a second font,
+   or an animation/motion library. Hover states should be subtle
+   (color/border transitions only).
