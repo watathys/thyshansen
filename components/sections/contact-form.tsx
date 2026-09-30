@@ -21,7 +21,7 @@ export function ContactForm() {
       </p>
 
       {state.success ? (
-        <div className="mt-6 rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-5 text-emerald-600 dark:text-emerald-400">
+        <div className="mt-6 rounded-xl border border-emerald-400/25 bg-emerald-400/10 p-5 text-emerald-300">
           <div className="flex items-center gap-2 font-semibold">
             <svg
               className="h-5 w-5"
@@ -38,7 +38,7 @@ export function ContactForm() {
             </svg>
             Message Sent Successfully!
           </div>
-          <p className="mt-1 text-xs leading-relaxed text-emerald-600/90 dark:text-emerald-400/90">
+          <p className="mt-1 text-xs leading-relaxed text-emerald-300/90">
             Thank you for reaching out. I&apos;ve received your message and will get back to you shortly.
           </p>
         </div>
@@ -58,7 +58,7 @@ export function ContactForm() {
 
           {/* Form General Error */}
           {state.error ? (
-            <div className="rounded-lg border border-red-500/20 bg-red-500/10 p-3 text-xs font-semibold text-red-600 dark:text-red-400">
+            <div className="rounded-lg border border-red-400/25 bg-red-400/10 p-3 text-xs font-semibold text-red-300">
               {state.error}
             </div>
           ) : null}

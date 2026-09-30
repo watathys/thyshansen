@@ -1,19 +1,94 @@
-import { Hero } from "@/components/sections/hero";
-import { About } from "@/components/sections/about";
-import { Projects } from "@/components/sections/projects";
-import { Creative } from "@/components/sections/creative";
-import { Experience } from "@/components/sections/experience";
-import { Contact } from "@/components/sections/contact";
+import { site } from "@/content/site";
+import { publicFileExists } from "@/lib/media-server";
+import { HeroSlider } from "@/components/sections/hero-slider";
+import type { HeroSlideData } from "@/components/projects/hero-slide";
 
 export default function Home() {
-  return (
-    <>
-      <Hero />
-      <About />
-      <Projects limit={4} showViewAll />
-      <Creative />
-      <Experience />
-      <Contact />
-    </>
+  // Resolve image availability on the server (fs access) so the client
+  // hero slider never needs to import server-only media utilities.
+  const introSlide: HeroSlideData = {
+    slug: "intro",
+    eyebrow: site.heroIntro.eyebrow,
+    title: site.name,
+    description: site.heroIntro.description,
+    href: site.heroIntro.href,
+    ctaLabel: site.heroIntro.ctaLabel,
+    image: site.headshot,
+    hasImage: publicFileExists(site.headshot),
+    background: site.heroIntro.background,
+    accent: site.heroIntro.accent,
+  };
+
+  const projectSlides: HeroSlideData[] = site.projects.map((project) => ({
+    slug: project.slug,
+    eyebrow: project.tags[0] ?? "Project",
+    title: project.name,
+    description: project.oneLiner,
+    href: `/work/${project.slug}`,
+    ctaLabel: "Open Case Study",
+    image: project.image,
+    imageFit: project.imageFit,
+    video: project.video,
+    hasImage: publicFileExists(project.image),
+    background: project.background,
+    accent: project.accent,
+  }));
+
+  const firstPhoto = site.photos[0]?.src;
+  const creativesSlide: HeroSlideData = {
+    slug: "creatives",
+    eyebrow: site.heroCreatives.eyebrow,
+    title: "Creatives",
+    description: site.heroCreatives.description,
+    href: site.heroCreatives.href,
+    ctaLabel: site.heroCreatives.ctaLabel,
+    image: firstPhoto,
+    hasImage: publicFileExists(firstPhoto),
+    background: site.heroCreatives.background,
+    accent: site.heroCreatives.accent,
+  };
+
+  const experienceSlide: HeroSlideData = {
+    slug: "work-experience",
+    eyebrow: site.heroExperience.eyebrow,
+    title: "Work Experience",
+    description: site.heroExperience.description,
+    href: site.heroExperience.href,
+    ctaLabel: site.heroExperience.ctaLabel,
+    image: site.resumeImage,
+    hasImage: publicFileExists(site.resumeImage),
+    background: site.heroExperience.background,
+    accent: site.heroExperience.accent,
+  };
+
+  const contactSlide: HeroSlideData = {
+    slug: "contact",
+    eyebrow: site.heroContact.eyebrow,
+    title: "Let's talk product.",
+    description: site.heroContact.description,
+    href: site.heroContact.href,
+    ctaLabel: site.heroContact.ctaLabel,
+    links: site.heroContact.links,
+    hasImage: false,
+    background: site.heroContact.background,
+    accent: site.heroContact.accent,
+  };
+
+  // Compose the presentation in the editorial order defined in `content/site.ts`
+  // — info cards (Creatives, Work Experience, Contact) interleave with the
+  // projects. Any slug without a matching slide is simply skipped.
+  const slidesBySlug = new Map<string, HeroSlideData>(
+    [
+      introSlide,
+      ...projectSlides,
+      creativesSlide,
+      experienceSlide,
+      contactSlide,
+    ].map((slide) => [slide.slug, slide]),
   );
+  const slides: HeroSlideData[] = site.heroSlideOrder
+    .map((slug) => slidesBySlug.get(slug))
+    .filter((slide): slide is HeroSlideData => Boolean(slide));
+
+  return <HeroSlider slides={slides} />;
 }

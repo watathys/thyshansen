@@ -18,10 +18,10 @@ export default function PhotographyPage() {
       <Container>
         {/* Back Link */}
         <Link
-          href="/#creative"
+          href="/"
           className="inline-flex items-center gap-1.5 text-sm font-medium text-muted transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
         >
-          ← Back to Creative
+          ← Back to Home
         </Link>
 
         {/* Page Heading */}

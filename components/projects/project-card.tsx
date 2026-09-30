@@ -2,8 +2,9 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Project } from "@/content/site";
 import { Tag } from "@/components/ui/tag";
-import { initials } from "@/lib/media";
+import { imageFitClass, initials } from "@/lib/media";
 import { publicFileExists } from "@/lib/media-server";
+import { cn } from "@/lib/utils";
 
 export function ProjectCard({
   project,
@@ -27,7 +28,10 @@ export function ProjectCard({
               alt={project.name}
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-cover transition-transform duration-300 group-hover:scale-105"
+              className={cn(
+                imageFitClass(project.imageFit),
+                "transition-transform duration-300 group-hover:scale-105",
+              )}
             />
           ) : (
             <div className="flex h-full min-h-[220px] w-full flex-col items-center justify-center bg-gradient-to-br from-card-bg to-border/40 p-8 text-center">
@@ -118,7 +122,10 @@ export function ProjectCard({
             alt={project.name}
             fill
             sizes="(max-width: 768px) 100vw, 50vw"
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            className={cn(
+              imageFitClass(project.imageFit),
+              "transition-transform duration-300 group-hover:scale-105",
+            )}
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-card-bg to-border/40 p-6 text-center">

@@ -6,7 +6,7 @@ import { site } from "@/content/site";
 import { Container } from "@/components/layout/container";
 import { Tag } from "@/components/ui/tag";
 import { ButtonLink } from "@/components/ui/button-link";
-import { initials } from "@/lib/media";
+import { imageFitClass, initials } from "@/lib/media";
 import { publicFileExists } from "@/lib/media-server";
 
 export function generateStaticParams() {
@@ -99,7 +99,7 @@ export default async function WorkDetailPage({
               alt={project.name}
               fill
               sizes="(max-width: 896px) 100vw, 896px"
-              className="object-cover"
+              className={imageFitClass(project.imageFit)}
               priority
             />
           ) : (
@@ -158,7 +158,7 @@ export default async function WorkDetailPage({
             {/* Key Results */}
             {project.metrics.length > 0 ? (
               <div>
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-accent">
+                <h3 className="text-eyebrow font-sans text-xs font-bold text-accent">
                   Key Results
                 </h3>
                 <ul className="mt-4 space-y-2.5">
@@ -177,7 +177,7 @@ export default async function WorkDetailPage({
             {/* Tech Stack */}
             {project.techStack.length > 0 ? (
               <div>
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-accent">
+                <h3 className="text-eyebrow font-sans text-xs font-bold text-accent">
                   Tech Stack & Tools
                 </h3>
                 <div className="mt-4 flex flex-wrap gap-2">
@@ -195,7 +195,7 @@ export default async function WorkDetailPage({
 
             {/* External Links */}
             <div className="border-t border-border/60 pt-6">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-accent">
+              <h3 className="text-eyebrow font-sans text-xs font-bold text-accent">
                 Links
               </h3>
               <div className="mt-3 flex flex-col gap-2">

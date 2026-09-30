@@ -20,10 +20,10 @@ export default function VideographyPage() {
         {/* Header & Back Link */}
         <div>
           <Link
-            href="/#creative"
+            href="/"
             className="inline-flex items-center gap-1.5 text-sm font-medium text-muted transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
           >
-            ← Back to Creative
+            ← Back to Home
           </Link>
 
           <div className="mt-8">
@@ -37,7 +37,7 @@ export default function VideographyPage() {
           {/* Tools & Wheatley Growth Banner */}
           <div className="mt-8 grid gap-6 rounded-2xl border border-border bg-card-bg p-6 sm:p-8 md:grid-cols-[1fr_auto]">
             <div>
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-accent">
+              <h3 className="text-eyebrow font-sans text-xs font-bold text-accent">
                 Production Stack & Tools
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-muted">

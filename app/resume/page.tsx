@@ -66,7 +66,7 @@ export default function ResumePage() {
             <span>PDF Document Viewer</span>
           </div>
 
-          <div className="relative aspect-[1/1.3] w-full min-h-[650px] bg-zinc-900/5 sm:min-h-[850px]">
+          <div className="relative aspect-[1/1.3] w-full min-h-[650px] bg-black/20 sm:min-h-[850px]">
             <object
               data={`${site.resumeUrl}#toolbar=0&navpanes=0`}
               type="application/pdf"

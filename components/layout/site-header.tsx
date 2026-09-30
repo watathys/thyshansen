@@ -1,40 +1,52 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { site } from "@/content/site";
 import { Container } from "@/components/layout/container";
-import { MobileNav } from "@/components/layout/mobile-nav";
+import { cn } from "@/lib/utils";
 
+/**
+ * Fixed (not sticky) and fully transparent so it never sits behind a solid
+ * color band of its own. The homepage hero is white, so the header text is
+ * dark there; every other page uses the dark theme, so it stays light. Uses
+ * `usePathname` to flip the color without duplicating the header.
+ */
 export function SiteHeader() {
+  const pathname = usePathname();
+  const onHome = pathname === "/";
+
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur-md">
+    <header className="fixed inset-x-0 top-0 z-40">
       <Container className="flex h-16 items-center justify-between">
         <Link
           href="/#top"
-          className="rounded-md text-sm font-semibold tracking-tight text-foreground transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+          className={cn(
+            "text-eyebrow rounded-md text-sm font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
+            onHome
+              ? "text-zinc-900 hover:text-zinc-500"
+              : "text-foreground hover:text-accent"
+          )}
         >
           {site.name}
         </Link>
 
-        {/* Desktop nav */}
-        <nav aria-label="Main navigation" className="hidden items-center gap-6 sm:flex">
+        <nav aria-label="Main navigation" className="flex items-center gap-6">
           {site.navLinks.map((link) => (
             <Link
               key={link.label}
               href={link.href}
-              className="rounded-md px-1 py-0.5 text-sm text-muted transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+              className={cn(
+                "text-eyebrow rounded-md px-1 py-0.5 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
+                onHome
+                  ? "text-zinc-700 hover:text-zinc-500"
+                  : "text-foreground hover:text-accent"
+              )}
             >
               {link.label}
             </Link>
           ))}
-          <a
-            href={`mailto:${site.email}`}
-            className="rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-          >
-            Contact
-          </a>
         </nav>
-
-        {/* Mobile menu */}
-        <MobileNav links={site.navLinks} email={site.email} />
       </Container>
     </header>
   );

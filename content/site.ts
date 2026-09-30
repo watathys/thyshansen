@@ -44,6 +44,49 @@ export interface ProjectLink {
   url: string;
 }
 
+/**
+ * A non-project "info" card in the homepage hero slider (the intro/about
+ * card, the Creatives teaser, and the Work Experience teaser). Each links
+ * to an anchor further down the homepage rather than a case study page.
+ */
+export interface HeroInfoCard {
+  /** Small tracked label shown above the title, e.g. "About Me". */
+  eyebrow: string;
+  /** Short paragraph shown under the title. */
+  description: string;
+  /** CTA text before the arrow, e.g. "About Me", "View Experience". */
+  ctaLabel: string;
+  /** Where the card's title/CTA link to — usually a same-page anchor. */
+  href: string;
+  /**
+   * This card's full-page background color in the hero, as a hex string.
+   * The intro card is white; other cards use a soft tint so the whole
+   * presentation reads as a varied, editorial palette rather than plain
+   * white.
+   */
+  background: string;
+  /**
+   * This card's accent color, as a hex string. Drives the hero's headline,
+   * eyebrow, CTA, and the thin vertical strip on the left edge — legible on
+   * `background` (aim for ≥4.5:1).
+   */
+  accent: string;
+  /**
+   * Optional extra destination links rendered as a row of pills under the
+   * description (e.g. the Contact card's Email / LinkedIn / Instagram). When
+   * present, these replace the single `ctaLabel` button.
+   */
+  links?: ProjectLink[];
+}
+
+/**
+ * How a project's `image` fills its frame. `"cover"` (the default) fills the
+ * frame and crops the overflow, which is right for screenshots. `"contain"`
+ * shows the whole asset letterboxed, which is right for logo/brand marks that
+ * must never be cropped.
+ */
+export type ImageFit = "cover" | "contain";
+
 export interface Project {
   /** URL-safe unique identifier, used for /work/[slug] */
   slug: string;
@@ -58,6 +101,10 @@ export interface Project {
   whatIBuilt: string;
   /** Role description. */
   role: string;
+  /** Who the work was for — "CLIENT" metadata on the case study. */
+  client: string;
+  /** When it shipped — "DATE" metadata on the case study. */
+  date: string;
   /** Quantified outcomes & metrics. */
   metrics: string[];
   /** Tech stack array. */
@@ -68,9 +115,34 @@ export interface Project {
   secondaryLinks?: ProjectLink[];
   /** Path relative to /public, e.g. "/projects/junbi.png". Optional. */
   image?: string;
+  /**
+   * How `image` fills its frame; defaults to `"cover"`. Set to `"contain"`
+   * for logo/brand marks (square or transparent assets that a cover fit
+   * would crop).
+   */
+  imageFit?: ImageFit;
   tags: string[];
   /** If true, rendered as a larger featured card at the top of Selected Work. */
   featured?: boolean;
+  /**
+   * This project's full-page background color in the hero, as a hex string.
+   * A soft tint that gives the presentation color variety while keeping the
+   * accent (below) legible.
+   */
+  background: string;
+  /**
+   * This project's accent color, as a hex string. Drives the homepage hero's
+   * headline, eyebrow, CTA, and the thin vertical strip on the left edge.
+   * Pick something distinct from the other projects and legible on
+   * `background`.
+   */
+  accent: string;
+  /**
+   * Optional looping video snippet shown in the hero's media stage while
+   * this project is active. Path relative to /public. Falls back to `image`
+   * (or a monogram card) when unset.
+   */
+  video?: string;
 }
 
 export interface ExperienceRole {
@@ -121,6 +193,16 @@ export interface VideographyInfo {
   };
 }
 
+/** Copy for the dark intro sequence that plays before the homepage hero. */
+export interface PreloaderContent {
+  /** Small tracked line under the outlined name, e.g. a role descriptor. */
+  role: string;
+  /** Speech-bubble easter egg pinned to the bottom-left of the intro. */
+  caption: string;
+  /** Screen-reader label announced while the intro is playing. */
+  label: string;
+}
+
 export interface SiteContent {
   name: string;
   tagline: string;
@@ -128,6 +210,12 @@ export interface SiteContent {
   bio: string;
   headshot: string;
   resumeUrl: string;
+  /**
+   * Optional screenshot/preview image of the resume, used as the visual
+   * for the homepage hero's "Work Experience" card. Path relative to
+   * /public. Falls back to a generic document placeholder if missing.
+   */
+  resumeImage?: string;
   email: string;
   linkedin: string;
   /** Leave as an empty string to hide the Instagram link entirely. */
@@ -135,6 +223,23 @@ export interface SiteContent {
   /** Deployed site URL, used for SEO metadata + sitemap. */
   url: string;
   navLinks: NavLink[];
+  /** Dark intro/preloader sequence shown on every full page load. */
+  preloader: PreloaderContent;
+  /** The homepage hero slider's intro card — "meet Thys" — links to About. */
+  heroIntro: HeroInfoCard;
+  /** The homepage hero slider's Creatives teaser card — links to Creative. */
+  heroCreatives: HeroInfoCard;
+  /** The homepage hero slider's Work Experience teaser card — links to Experience. */
+  heroExperience: HeroInfoCard;
+  /** The homepage hero slider's Contact card — links to email. */
+  heroContact: HeroInfoCard;
+  /**
+   * Explicit order of the homepage hero's slides, by slug. `"intro"`,
+   * `"creatives"`, `"work-experience"`, and `"contact"` are the info cards;
+   * every other entry matches a `Project.slug`. Lets project and info cards
+   * interleave in the presentation independently of `projects` order.
+   */
+  heroSlideOrder: string[];
   facts: Fact[];
   stats: Stat[];
   education: Education;
@@ -160,16 +265,76 @@ export const site: SiteContent = {
   resumeUrl: "/resume.pdf",
   email: "watathys@gmail.com",
   linkedin: "https://linkedin.com/in/thysh",
-  instagram: "https://instagram.com",
+  instagram: "https://www.instagram.com/th.y.s/",
   url: "https://thyshansen.com",
 
-  navLinks: [
-    { label: "Work", href: "/#work" },
-    { label: "Creative", href: "/#creative" },
-    { label: "About", href: "/#about" },
-    { label: "Experience", href: "/#experience" },
-    { label: "Resume", href: "/resume" },
-    { label: "Contact", href: "/#contact" },
+  // Kept minimal by design: the header only ever shows the name (links
+  // home) plus this one link. Everything else is reached from within the
+  // homepage hero slider or in-page CTAs.
+  navLinks: [{ label: "About", href: "/about" }],
+
+  preloader: {
+    role: "Product-minded strategist",
+    caption: "Psst… the case studies are worth a click.",
+    label: "Loading portfolio",
+  },
+
+  heroIntro: {
+    eyebrow: "About Me",
+    description:
+      "I'm Thys — I study Business Strategic Management at BYU. See my projects and work experience below.",
+    ctaLabel: "About Me",
+    href: "/about",
+    background: "#f1e9da",
+    accent: "#a78f6a",
+  },
+
+  heroCreatives: {
+    eyebrow: "Creative",
+    description:
+      "Photography and videography from travel, product launches, and campus productions.",
+    ctaLabel: "View Photos & Videos",
+    href: "/gallery",
+    background: "#f0e5cf",
+    accent: "#7d6038",
+  },
+
+  heroExperience: {
+    eyebrow: "Career",
+    description:
+      "Product leadership, full-stack engineering, and media production across ventures and institutions.",
+    ctaLabel: "View Experience",
+    href: "/resume",
+    background: "#e3e9ed",
+    accent: "#46535c",
+  },
+
+  heroContact: {
+    eyebrow: "Contact",
+    description:
+      "Open to product management internships and full-time roles. The fastest way to reach me is email, LinkedIn, or Instagram.",
+    ctaLabel: "Email Me",
+    href: "mailto:watathys@gmail.com",
+    background: "#e6eaf0",
+    accent: "#3e4c6b",
+    links: [
+      { label: "Email", url: "mailto:watathys@gmail.com" },
+      { label: "LinkedIn", url: "https://linkedin.com/in/thysh" },
+      { label: "Instagram", url: "https://www.instagram.com/th.y.s/" },
+    ],
+  },
+
+  // Kazzi Soda and "What I'm working on now" intentionally interleave with
+  // the Creatives teaser: info cards sit between projects in the hero.
+  heroSlideOrder: [
+    "intro",
+    "junbi",
+    "bookends",
+    "kazzi-soda",
+    "creatives",
+    "games",
+    "work-experience",
+    "contact",
   ],
 
   facts: [
@@ -213,6 +378,8 @@ export const site: SiteContent = {
       whatIBuilt:
         "An AI study-podcast platform that transforms user study notes, slides, and documents into interactive audio lessons and review podcasts.",
       role: "Founder & Solo Developer (Conceived, designed, engineered, launched, and marketed independently).",
+      client: "Junbi",
+      date: "2026",
       metrics: [
         "4,000+ Active Users",
         "700+ Registered Accounts",
@@ -223,7 +390,10 @@ export const site: SiteContent = {
       techStack: ["Next.js", "Supabase", "Vercel", "Xcode / Swift", "AI Audio APIs"],
       url: "https://junbi.study",
       image: "/projects/junbi.png",
+      imageFit: "contain",
       tags: ["AI Audio", "Full Stack", "Product Strategy", "iOS & Web"],
+      background: "#f9fafb",
+      accent: "#1bd3a9",
     },
     {
       slug: "bookends",
@@ -238,6 +408,8 @@ export const site: SiteContent = {
       whatIBuilt:
         "An AI-powered voice journaling application that transcribes spoken thoughts into structured narratives and automatically audits key recurring life themes.",
       role: "Product Manager & Full Stack Engineer",
+      client: "Bookends",
+      date: "2025",
       metrics: [
         "AI Voice Processing",
         "Automated Life Audit",
@@ -246,11 +418,14 @@ export const site: SiteContent = {
       techStack: ["Next.js", "React Native", "AI Voice LLM", "Tailwind CSS"],
       url: "https://genfm.app",
       image: "/projects/bookends.png",
+      imageFit: "contain",
       tags: ["AI Voice", "Mobile & Web", "Personal Analytics"],
+      background: "#f8f7f2",
+      accent: "#2e5a47",
     },
     {
       slug: "games",
-      name: "AI Party Games",
+      name: "What I'm working on now",
       featured: false,
       oneLiner:
         "Two AI-powered interactive social party games: Arena Games and Pitch-a-Biz.",
@@ -261,11 +436,15 @@ export const site: SiteContent = {
       whatIBuilt:
         "Two distinct AI party games: 'Arena Games' (a prompt battle arena) and 'Pitch-a-Biz' (an AI-judged rapid business pitch game).",
       role: "Game Designer & Lead Developer",
+      client: "Independent",
+      date: "2025",
       metrics: ["2 Original AI Games", "Interactive LLM Judge", "Rapid Prototype"],
       techStack: ["Next.js", "TypeScript", "LLM APIs", "Tailwind CSS"],
       url: "",
       image: "/projects/games.png",
       tags: ["Game Dev", "AI Prompting", "Multiplayer"],
+      background: "#e2eee6",
+      accent: "#3f6b53",
     },
     {
       slug: "kazzi-soda",
@@ -280,6 +459,8 @@ export const site: SiteContent = {
       whatIBuilt:
         "A physical dirty soda recipe card deck, e-commerce landing page, and an organic TikTok content campaign.",
       role: "Product Creator & Content Director (Shot and edited every promotional video, managed physical production, and built the storefront).",
+      client: "Kazzi Soda",
+      date: "2024",
       metrics: [
         "100% Shot & Edited Videos",
         "170K+ Organic TikTok Views",
@@ -290,8 +471,10 @@ export const site: SiteContent = {
       secondaryLinks: [
         { label: "TikTok", url: "https://www.tiktok.com/@kazzisoda" },
       ],
-      image: "/projects/kazzi-soda.png",
+      image: "/projects/kazzi-soda.jpg",
       tags: ["Consumer Product", "Content Strategy", "E-Commerce", "Video Production"],
+      background: "#feeef0",
+      accent: "#e31837",
     },
   ],
 
@@ -336,44 +519,99 @@ export const site: SiteContent = {
 
   photos: [
     {
-      src: "/photography/kyoto-bamboo.jpg",
-      alt: "Kyoto bamboo forest at dawn",
-      caption: "Kyoto, Japan — Dawn light filtering through Arashiyama bamboo grove.",
+      src: "/photography/salt-lake-city-utah.jpg",
+      alt: "Salt Lake City downtown skyline against the Wasatch Mountains",
+      caption: "Salt Lake City, Utah — Skyline view framing the Wasatch mountain backdrop.",
     },
     {
-      src: "/photography/tokyo-night.jpg",
-      alt: "Tokyo street reflections at night",
-      caption: "Shinjuku, Tokyo — Neon rain reflection along alleyway.",
+      src: "/photography/provo-utah.jpg",
+      alt: "Provo, Utah golden hour cityscape",
+      caption: "Provo, Utah — Golden hour reflections over Utah Valley.",
     },
     {
-      src: "/photography/wasatch-mountains.jpg",
-      alt: "Wasatch mountain range sunset",
-      caption: "Wasatch Mountains, Utah — Alpine glow at dusk.",
+      src: "/photography/provo-utah-2.jpg",
+      alt: "Provo valley at twilight",
+      caption: "Provo, Utah — Twilight mood across the city.",
     },
     {
-      src: "/photography/tokyo-architecture.jpg",
-      alt: "Minimalist concrete urban architecture",
-      caption: "Ginza, Tokyo — Structural symmetry and concrete shadows.",
+      src: "/photography/provo-utah-3.jpg",
+      alt: "Provo mountain peaks at sunset",
+      caption: "Provo, Utah — Sunset light over mountain peaks.",
     },
     {
-      src: "/photography/junbi-launch.jpg",
-      alt: "Junbi app launch user testing session",
-      caption: "Junbi Launch — Early morning user feedback session at BYU.",
+      src: "/photography/provo-canyon-utah.jpg",
+      alt: "Provo Canyon autumn foliage",
+      caption: "Provo Canyon, Utah — Autumn foliage along the canyon floor.",
     },
     {
-      src: "/photography/big-sur-mist.jpg",
-      alt: "Coastal fog along California Highway 1",
-      caption: "Big Sur, California — Morning Pacific ocean mist.",
+      src: "/photography/byu-campus.jpg",
+      alt: "BYU Campus grounds in Provo",
+      caption: "BYU Campus, Provo — Campus grounds during late afternoon light.",
     },
     {
-      src: "/photography/soda-shoot.jpg",
-      alt: "Kazzi Soda recipe card product shoot",
-      caption: "Provo, Utah — Studio lighting for Kazzi Soda deck.",
+      src: "/photography/sundance-utah.jpg",
+      alt: "Sundance mountain resort scenery",
+      caption: "Sundance, Utah — Mountain scenery in alpine forest.",
     },
     {
-      src: "/photography/tokyo-subway.jpg",
-      alt: "Tokyo transit station symmetry",
-      caption: "Shibuya, Tokyo — Late night subway platform line.",
+      src: "/photography/draper-utah.jpg",
+      alt: "Draper vista over Salt Lake Valley",
+      caption: "Draper, Utah — Panoramic vista overlooking Salt Lake Valley.",
+    },
+    {
+      src: "/photography/american-fork-utah.jpg",
+      alt: "American Fork mountain pass",
+      caption: "American Fork, Utah — Mountain pass and natural landscapes.",
+    },
+    {
+      src: "/photography/bergen-norway.jpg",
+      alt: "Bergen historic waterfront architecture",
+      caption: "Bergen, Norway — Coastal waterfront and colorful historic architecture.",
+    },
+    {
+      src: "/photography/fjords-norway.jpg",
+      alt: "Norwegian fjord landscape with steep cliffs",
+      caption: "Fjords, Norway — Dramatic glacier fjord waters and mountain cliffs.",
+    },
+    {
+      src: "/photography/fjords-norway-2.jpg",
+      alt: "Misty mountain valleys in Norwegian fjords",
+      caption: "Fjords, Norway — Fog and deep green valleys along Norwegian fjords.",
+    },
+    {
+      src: "/photography/iceland.jpg",
+      alt: "Icelandic volcanic landscape",
+      caption: "Iceland — Volcanic landscapes and natural black sand terrain.",
+    },
+    {
+      src: "/photography/iceland-2.jpg",
+      alt: "Icelandic waterfall and horizon",
+      caption: "Iceland — Glacial waterfalls and open horizon.",
+    },
+    {
+      src: "/photography/osaka-japan.jpg",
+      alt: "Osaka vibrant street life",
+      caption: "Osaka, Japan — Urban street scenes and vibrant culture.",
+    },
+    {
+      src: "/photography/osaka-japan-2.jpg",
+      alt: "Osaka neon night lights in Dotonbori",
+      caption: "Osaka, Japan — Night lights and architectural angles in Dotonbori.",
+    },
+    {
+      src: "/photography/egypt.jpg",
+      alt: "Egyptian desert and ancient monuments",
+      caption: "Egypt — Historic monuments and desert horizons.",
+    },
+    {
+      src: "/photography/egypt-2.jpg",
+      alt: "Ancient Egyptian temple stone carvings",
+      caption: "Egypt — Ancient temple architecture and timeless stone carvings.",
+    },
+    {
+      src: "/photography/jordan.jpg",
+      alt: "Petra Jordan sandstone canyon vista",
+      caption: "Jordan — Sandstone canyons and ancient desert vistas of Petra.",
     },
   ],
 

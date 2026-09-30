@@ -24,6 +24,7 @@
 
 5. **Match the existing design system**: one neutral palette (Tailwind's
    `zinc`/`border`/`muted` tokens) plus the single `--color-accent` defined
-   in `app/globals.css`. Don't add a second accent color, a second font,
-   or an animation/motion library. Hover states should be subtle
-   (color/border transitions only).
+   in `app/globals.css`. Don't add a second accent color or a second font.
+   Framer Motion is the only allowed animation library (used solely by the
+   homepage hero). Hover states should be subtle (color/border transitions
+   only).

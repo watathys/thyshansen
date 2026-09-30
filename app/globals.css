@@ -1,28 +1,25 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #18181b; /* zinc-900 */
-  --muted: #71717a; /* zinc-500 */
-  --border: #e4e4e7; /* zinc-200 */
-  --card-bg: #f4f4f5; /* zinc-100 */
+  /* Editorial single-theme palette: a muted, desaturated slate-teal
+   * backdrop with off-white text. There is intentionally no separate
+   * light/dark mode — this dark, moody palette is the design. */
+  --background: #3d5a70; /* muted slate teal */
+  --foreground: #f5f5f7; /* soft off-white */
+  --muted: #c3d5de; /* desaturated powder blue, ~4.8:1 on background */
+  --border: rgba(245, 245, 247, 0.14);
+  --card-bg: #33495a; /* recessed panel, slightly darker than background */
 
-  /* Single accent color used sparingly: links, primary buttons, focus rings. */
-  --accent: #2563eb; /* blue-600 */
-  --accent-foreground: #ffffff;
-}
+  /* Single sitewide accent used sparingly: links, primary buttons, focus
+   * rings, eyebrows. Warm champagne/sand to pop against the cool teal
+   * base — ~4.6:1 against both --background and --card-bg. */
+  --accent: #e6c9a0;
+  --accent-foreground: #1c2b33;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #09090b; /* zinc-950 */
-    --foreground: #f4f4f5; /* zinc-100 */
-    --muted: #a1a1aa; /* zinc-400 */
-    --border: #27272a; /* zinc-800 */
-    --card-bg: #18181b; /* zinc-900 */
-
-    --accent: #3b82f6; /* blue-500 */
-    --accent-foreground: #ffffff;
-  }
+  /* Page-load intro: a deep neutral screen, then a slate-teal curtain that
+   * wipes across before the hero is revealed. */
+  --preloader: #18181b;
+  --curtain: #2d4f64;
 }
 
 @theme inline {
@@ -32,11 +29,16 @@
   --color-border: var(--border);
   --color-card-bg: var(--card-bg);
 
+  --color-preloader: var(--preloader);
+  --color-curtain: var(--curtain);
+
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
 
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Editorial serif for headings (font-serif) + geometric sans for body
+   * and UI copy (font-sans). Both wired via next/font in app/layout.tsx. */
+  --font-sans: var(--font-sans);
+  --font-serif: var(--font-serif);
 }
 
 html {
@@ -47,12 +49,67 @@ html {
 body {
   background-color: var(--color-background);
   color: var(--color-foreground);
-  transition: background-color 0.15s ease, color 0.15s ease;
+  /* Matches the hero slide duration so any body-level color shift (e.g. the
+   * per-project background fade) interpolates over the full glide instead of
+   * snapping partway through. */
+  transition: background-color 0.8s ease, color 0.15s ease;
+}
+
+/* Editorial serif headings sitewide — set once here instead of repeating
+ * `font-serif` on every heading in every component. */
+h1,
+h2,
+h3 {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 ::selection {
-  background-color: color-mix(in srgb, var(--color-accent) 25%, transparent);
+  background-color: color-mix(in srgb, var(--color-accent) 30%, transparent);
 }
+
+/* Utility for uppercase, tracked micro-copy (nav links, eyebrows, CTAs) —
+ * used instead of repeating the same three Tailwind classes everywhere. */
+.text-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+/* Hides scrollbars on the hero slider's internal snap container without
+ * removing scroll functionality (mouse wheel, touch, and keyboard still
+ * work — this is purely cosmetic). */
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hollow headline used by the intro: transparent fill + hairline stroke.
+ * A second, filled copy is clip-revealed on top of it to "illuminate" it. */
+.text-outline {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(245, 245, 247, 0.55);
+}
+
+/* Non-active cards in the hero's quick-navigator scrub desaturate to
+ * grayscale and dim, while the hovered card stays full color. Quick CSS
+ * transition keeps the scrub feeling snappy. */
+.media-card-dull {
+  /* `saturate(0)` is used instead of `grayscale(100%)`: Lightning CSS (used
+   * by Tailwind v4) drops the argument on full `grayscale(1)`/`grayscale(100%)`,
+   * producing an invalid `grayscale()`. Desaturating to zero is visually identical
+   * to full grayscale and survives minification intact. */
+  filter: saturate(0) opacity(0.4);
+  transition: filter 0.25s ease;
+}
+
+/* The right-column media track now owns its 3D tilt + perspective inline
+ * (see `HeroMediaStage`) so the tilt and the vertical glide are a single,
+ * rigid transform on one element — no CSS/JS transform conflict. The
+ * `.hero-tilt` classes were removed with that refactor. */
 
 /* Respect users who've asked for reduced motion */
 @media (prefers-reduced-motion: reduce) {
