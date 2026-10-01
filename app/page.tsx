@@ -1,5 +1,6 @@
 import { site } from "@/content/site";
-import { publicFileExists } from "@/lib/media-server";
+import { publicFileExists, mediaStatus } from "@/lib/media-server";
+import { caseStudyHref } from "@/lib/projects";
 import { HeroSlider } from "@/components/sections/hero-slider";
 import type { HeroSlideData } from "@/components/projects/hero-slide";
 
@@ -19,20 +20,29 @@ export default function Home() {
     accent: site.heroIntro.accent,
   };
 
-  const projectSlides: HeroSlideData[] = site.projects.map((project) => ({
-    slug: project.slug,
-    eyebrow: project.tags[0] ?? "Project",
-    title: project.name,
-    description: project.oneLiner,
-    href: `/work/${project.slug}`,
-    ctaLabel: "Open Case Study",
-    image: project.image,
-    imageFit: project.imageFit,
-    video: project.video,
-    hasImage: publicFileExists(project.image),
-    background: project.background,
-    accent: project.accent,
-  }));
+  const projectSlides: HeroSlideData[] = site.projects.map((project) => {
+    const study = site.caseStudies.find(
+      (entry) => entry.slug === project.slug,
+    );
+
+    return {
+      slug: project.slug,
+      eyebrow: project.tags[0] ?? "Project",
+      title: project.name,
+      description: project.oneLiner,
+      href: caseStudyHref(project),
+      ctaLabel: "Open Case Study",
+      image: project.image,
+      imageFit: project.imageFit,
+      video: project.video,
+      hasImage: publicFileExists(project.image),
+      caseStudyMedia: study
+        ? study.sections.map((section) => mediaStatus(section.media))
+        : undefined,
+      background: project.background,
+      accent: project.accent,
+    };
+  });
 
   const firstPhoto = site.photos[0]?.src;
   const creativesSlide: HeroSlideData = {

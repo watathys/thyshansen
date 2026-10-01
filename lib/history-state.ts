@@ -18,15 +18,19 @@ export function pushStateWithoutRouter(url: string): void {
 }
 
 /**
- * True when `pathname` points at a project case study route (`/work/:slug`).
+ * True when `pathname` points at a project case study route — either the
+ * generic `/work/:slug` detail page or a dedicated `/projects/:slug` page.
  * Non-project pages (e.g. `/about`) never trigger the overlay.
  */
 export function isCaseStudyPath(pathname: string): boolean {
-  return /^\/work\/[^/]+$/.test(pathname);
+  return /^\/(work|projects)\/[^/]+$/.test(pathname);
 }
 
-/** Extracts the slug from a `/work/:slug` pathname (already URL-decoded). */
+/**
+ * Extracts the slug from a `/work/:slug` or `/projects/:slug` pathname
+ * (already URL-decoded).
+ */
 export function slugFromCaseStudyPath(pathname: string): string | null {
-  const match = pathname.match(/^\/work\/([^/]+)$/);
+  const match = pathname.match(/^\/(?:work|projects)\/([^/]+)$/);
   return match ? decodeURIComponent(match[1]) : null;
 }

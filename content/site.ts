@@ -203,6 +203,97 @@ export interface PreloaderContent {
   label: string;
 }
 
+/**
+ * One full-width looping demo inside a cinematic case study. When `src` is
+ * unset (or the file isn't in /public yet), the frame renders a clearly-marked
+ * placeholder instead of a broken video, so real screen recordings can be
+ * dropped in later without touching a component.
+ */
+export interface CaseStudyMedia {
+  /** Path relative to /public of a looping video, GIF, or screenshot. */
+  src?: string;
+  /** Optional poster frame shown while the video loads. */
+  poster?: string;
+  /**
+   * Describes the demo — used as the image's alt text, so it still needs to
+   * be written even though it isn't displayed as a visible caption.
+   */
+  caption: string;
+  /**
+   * How wide the demo runs. The default full-width frame suits screen
+   * recordings and wide screenshots; `"compact"` caps a smaller shot so it
+   * doesn't stretch across the page.
+   */
+  size?: "full" | "compact";
+  /** Short label shown on the empty frame, e.g. "[VIDEO PLACEHOLDER]". */
+  placeholderLabel: string;
+  /** What real footage belongs in this frame. */
+  placeholderNote: string;
+  /** CSS aspect ratio for the frame, e.g. "16 / 9". */
+  aspectRatio: string;
+}
+
+/**
+ * A block of prose inside a case-study section. A section that tells its story
+ * straight through uses a single block with no `heading`; a section broken into
+ * named beats uses several blocks, each introduced by a smaller sub-heading.
+ */
+export interface CaseStudyBlock {
+  /** Optional smaller sub-heading, e.g. "Make progress visible". */
+  heading?: string;
+  /** One or more first-person paragraphs. */
+  body: string[];
+}
+
+/** A numbered beat in a cinematic case study. */
+export interface CaseStudySection {
+  /** Two-digit label shown above the header, e.g. "01". */
+  number: string;
+  /** Short, punchy header — an emoji is welcome. */
+  title: string;
+  /** The section's prose, in order. */
+  blocks: CaseStudyBlock[];
+  /** Full-width looping demo shown under the copy. */
+  media?: CaseStudyMedia;
+  /** Clean number callouts, used instead of media (e.g. a growth section). */
+  stats?: Stat[];
+  /** Short takeaways rendered as a list (e.g. a "what I learned" section). */
+  lessons?: string[];
+}
+
+/** The closing CTA that ends a cinematic case study. */
+export interface CaseStudyClosing {
+  eyebrow: string;
+  title: string;
+  body: string;
+  /** Contact links rendered as buttons (email, LinkedIn, …). */
+  links: ProjectLink[];
+  /** Link that leaves the case study — the portfolio home. */
+  archiveLabel: string;
+  archiveHref: string;
+}
+
+/** A long-form, cinematic case study rendered at /projects/[slug]. */
+export interface CaseStudy {
+  /** Must match a `Project.slug`. */
+  slug: string;
+  /** Small tracked label above the hero title, e.g. "Case Study". */
+  eyebrow: string;
+  /** One-line tagline shown under the project name. */
+  tagline: string;
+  /** Heading above the first-person intro. */
+  aboutTitle: string;
+  /** First-person paragraphs on why the product exists. */
+  about: string[];
+  /** Hero metadata row (Role / Built at / Dates). */
+  meta: Fact[];
+  /** Label for the hero's link to the live product, if any. */
+  liveLabel?: string;
+  /** The numbered beats, in order. */
+  sections: CaseStudySection[];
+  closing: CaseStudyClosing;
+}
+
 export interface SiteContent {
   name: string;
   tagline: string;
@@ -244,6 +335,8 @@ export interface SiteContent {
   stats: Stat[];
   education: Education;
   projects: Project[];
+  /** Long-form cinematic case studies, matched to a `Project` by `slug`. */
+  caseStudies: CaseStudy[];
   experience: ExperienceRole[];
   photos: Photo[];
   videos: Video[];
@@ -253,6 +346,23 @@ export interface SiteContent {
 // ---------------------------------------------------------------------------
 // Content
 // ---------------------------------------------------------------------------
+
+/**
+ * The closing CTA every case study ends on — the same pitch and contact links
+ * each time, so they only live in one place. A study that needs its own can
+ * inline a `closing` object instead of referencing this.
+ */
+const caseStudyClosing: CaseStudyClosing = {
+  eyebrow: "Next",
+  title: "Let's work together.",
+  body: "I'm looking for product management internships and full-time roles where I can build close to users and ship fast. If that's the kind of work you're hiring for, I'd love to talk.",
+  links: [
+    { label: "Email me", url: "mailto:watathys@gmail.com" },
+    { label: "LinkedIn", url: "https://linkedin.com/in/thysh" },
+  ],
+  archiveLabel: "All projects",
+  archiveHref: "/",
+};
 
 export const site: SiteContent = {
   name: "Thys Hansen",
@@ -475,6 +585,372 @@ export const site: SiteContent = {
       tags: ["Consumer Product", "Content Strategy", "E-Commerce", "Video Production"],
       background: "#feeef0",
       accent: "#e31837",
+    },
+  ],
+
+  // Cinematic, first-person case studies. Each entry's `slug` must match a
+  // project above; when it does, that project's cards link to its dedicated
+  // /projects/[slug] page instead of the generic /work/[slug] detail page
+  // (see `lib/projects.ts`). Drop real screen recordings into /public and set
+  // each `media.src` to replace the [VIDEO PLACEHOLDER] frames.
+  caseStudies: [
+    {
+      slug: "junbi",
+      eyebrow: "Case Study",
+      tagline: "Turn your Quizlets and notes into AI-generated podcasts.",
+      aboutTitle: "About the project",
+      about: [
+        "I built Junbi because studying only worked when I was sitting at a desk. Flashcards, Quizlet sets, lecture slides — all of it assumed my hands were free and my eyes were on a screen. My real review happened on walks, at the gym, on drives, and in the ten minutes between classes. None of it counted.",
+        "Junbi turns the material you already have into an AI-generated podcast you can listen to anywhere. Drop in a Quizlet set, your notes, or a PDF, and it writes and narrates a review episode around exactly what you're trying to learn — no screen required.",
+      ],
+      meta: [
+        { label: "Role", value: "Solo Founder & Builder" },
+        { label: "Built at", value: "BYU Sandbox startup incubator" },
+        { label: "Dates", value: "[INSERT DATE RANGE]" },
+      ],
+      liveLabel: "Visit junbi.study ↗",
+      sections: [
+        {
+          number: "01",
+          title: "The problem 🎧",
+          blocks: [
+            {
+              body: [
+                "Every study tool I tried assumed I was at a desk. Quizlet, flashcard apps, PDF annotators — they all need your eyes and your hands. But studying isn't only a desk activity. It's a commute, a walk, a workout, a wait in line.",
+                "That gap is the whole product: audio-first review built from material you already made, for the moments you can't look at a screen.",
+              ],
+            },
+          ],
+          media: {
+            caption: "Turning a Quizlet set into a listenable review podcast.",
+            placeholderLabel: "[VIDEO PLACEHOLDER]",
+            placeholderNote:
+              "Screen recording: paste a Quizlet set and get a generated podcast episode back.",
+            aspectRatio: "16 / 9",
+          },
+        },
+        {
+          number: "02",
+          title: "Launching into silence",
+          blocks: [
+            {
+              body: [
+                "I launched, told everyone I knew, and watched signups trickle in and back out again. It was quiet — quieter than I expected after months of building.",
+                "The lesson wasn't that people didn't want it. I had built for my own friction point and assumed everyone else shared it. Generic study content wasn't the ask.",
+                "So I cut steps out of the flow and changed what Junbi generated: class-specific podcasts built from the student's own material, in their words, for their exam. That reframing is what finally started working.",
+              ],
+            },
+          ],
+          media: {
+            caption:
+              "Before and after: the signup flow, with the generic path replaced by class-specific podcasts.",
+            placeholderLabel: "[VIDEO PLACEHOLDER]",
+            placeholderNote:
+              "Screen recording or side-by-side: the old flow next to the new class-specific flow.",
+            aspectRatio: "16 / 9",
+          },
+        },
+        {
+          number: "03",
+          title: "Redesigning the whole thing",
+          blocks: [
+            {
+              body: [
+                "The first interface made sense to me and to almost no one else. People signed up, poked around, and never found the thing that actually mattered.",
+                "So I rebuilt the entire UI around real user feedback — moving the core action to where people already were, cutting the steps that hadn't earned their place, and making the first useful moment impossible to miss.",
+              ],
+            },
+          ],
+          media: {
+            caption: "A walkthrough of the rebuilt UI, next to the version it replaced.",
+            placeholderLabel: "[VIDEO PLACEHOLDER]",
+            placeholderNote:
+              "Screen recording: UI walkthrough, ideally a before/after comparison.",
+            aspectRatio: "16 / 9",
+          },
+        },
+        {
+          number: "04",
+          title: "4,000 users on $30 📈",
+          blocks: [
+            {
+              body: [
+                "Junbi grew to 4,000+ active users and 700+ registered accounts across 50+ universities — on a $30 marketing budget and about 20 hours of work.",
+                "Most of that came from treating distribution as part of the product. I brought on a marketing collaborator to run campus distribution, which widened the reach and helped secure a $500 local grant.",
+              ],
+            },
+          ],
+          stats: [
+            { value: "4,000+", label: "Active users" },
+            { value: "700+", label: "Registered accounts" },
+            { value: "50+", label: "Universities reached" },
+            { value: "$0.05", label: "Cost per acquisition" },
+            { value: "$30", label: "Total marketing budget" },
+            { value: "$500", label: "Local grant secured" },
+          ],
+        },
+        {
+          number: "05",
+          title: "Pitching Quizlet",
+          blocks: [
+            {
+              body: [
+                "Later in the build I got the chance to pitch Junbi directly to Quizlet's CFO — the company whose sets were already the front door to most of my users' study material.",
+                "I brought the product, the numbers, and a specific idea for where Junbi fit alongside what Quizlet already did. Whatever comes of it, that conversation changed how I think about building next to a giant instead of against one.",
+              ],
+            },
+          ],
+        },
+        {
+          number: "06",
+          title: "What I learned",
+          blocks: [
+            {
+              body: [
+                "A few things I'd tell myself before starting this.",
+              ],
+            },
+          ],
+          lessons: [
+            "Ship, then watch. My first version was built on assumptions. Every real improvement came after I stopped guessing and watched what people actually did.",
+            "Distribution is half the product. I could build fast, but Junbi only mattered once people could find it — and the $30 campaign taught me more than any feature did.",
+            "Low signups are data, not failure. The quiet launch was the most honest feedback I got, because it arrived before I knew how to ask for it.",
+            "Solo doesn't mean alone. Bringing in someone who owned distribution changed what I could build, because I stopped trying to do everything myself.",
+          ],
+        },
+      ],
+      closing: caseStudyClosing,
+    },
+    {
+      slug: "bookends",
+      eyebrow: "Case Study",
+      tagline: "Turning personal reflection into a product for growth",
+      aboutTitle: "About the project",
+      about: [
+        "I built Bookends to understand how I spend my time, identify unproductive habits, and become more intentional about my life. I saw an opportunity to combine journaling, task management, and AI into a single product that helps me turn reflection into action.",
+        "I designed Bookends around my own workflows, iterating on features that make daily planning easier and personal insights more actionable.",
+      ],
+      meta: [
+        { label: "Role", value: "Product Management · Product Design · Development" },
+        { label: "Tools", value: "Cursor · AI / LLMs · Vector Search" },
+        { label: "Type", value: "Personal Project" },
+      ],
+      sections: [
+        {
+          number: "01",
+          title: "Design around real behavior",
+          blocks: [
+            {
+              heading: "Make productivity actionable",
+              body: [
+                "I designed Bookends around a simple insight: I'm more productive when my priorities are visible and my day has structure.",
+                "I built task groups, daily task selection, scheduling, and goal tracking to help me break larger ambitions into manageable daily actions. Rather than overwhelming myself with everything I need to do, I can focus on what matters today while keeping long-term goals in view.",
+              ],
+            },
+          ],
+          media: {
+            src: "/projects/bookends/screenshot-1.png",
+            caption: "Planning a day: pulling tasks into a focused list.",
+            placeholderLabel: "[IMAGE PLACEHOLDER]",
+            placeholderNote:
+              "Screenshot: the daily planning view with tasks grouped and scheduled.",
+            aspectRatio: "1374 / 1574",
+          },
+        },
+        {
+          number: "02",
+          title: "Turn journaling into insights",
+          blocks: [
+            {
+              heading: "From reflection to action",
+              body: [
+                "I wanted journaling to do more than document my experiences. I integrated AI features that summarize entries, identify potential time-wasting habits, and suggest practical improvements.",
+                "This transformed journaling into a feedback loop: reflect on my day, recognize patterns, and adjust my behavior. The goal wasn't simply to track productivity, but to understand how I could improve it.",
+              ],
+            },
+          ],
+          media: {
+            src: "/projects/bookends/screenshot-2.png",
+            caption: "An entry, summarized back with the habits it surfaced.",
+            size: "compact",
+            placeholderLabel: "[IMAGE PLACEHOLDER]",
+            placeholderNote:
+              "Screenshot: a journal entry next to its AI summary and habit feedback.",
+            aspectRatio: "1370 / 822",
+          },
+        },
+        {
+          number: "03",
+          title: "Give AI a memory of my life",
+          blocks: [
+            {
+              heading: "The challenge: connecting experiences over time",
+              body: [
+                "I wanted to ask Bookends questions about my life and have it reference relevant experiences from months ago. Feeding my entire journal history into every conversation would be inefficient, while keyword search would miss entries that expressed similar ideas using different language.",
+              ],
+            },
+            {
+              heading: "Building a semantic memory system",
+              body: [
+                "I implemented a retrieval-augmented generation (RAG) pipeline using vector embeddings and similarity search.",
+                "Each journal entry is converted into a numerical representation of its meaning. When I ask a question, Bookends searches past entries for semantically similar experiences, retrieves the most relevant memories, and supplies them to the AI as context.",
+                "For example, describing a lack of focus today can surface an entry from a month ago about burnout, even if the wording is completely different.",
+                "The result is an AI that can connect past experiences to present challenges, helping me identify recurring patterns and better understand my behavior.",
+              ],
+            },
+          ],
+          media: {
+            src: "/projects/bookends/screenshot-3.png",
+            caption:
+              "Asking a question and having the AI pull up related entries from months back.",
+            size: "compact",
+            placeholderLabel: "[IMAGE PLACEHOLDER]",
+            placeholderNote:
+              "Screenshot: an AI chat referencing retrieved journal entries as context.",
+            aspectRatio: "1372 / 806",
+          },
+        },
+        {
+          number: "04",
+          title: "Build for measurable personal growth",
+          blocks: [
+            {
+              heading: "A product shaped by its user",
+              body: [
+                "Bookends brings planning, journaling, goal tracking, and AI-powered reflection into one system. Building it has helped me become more productive, develop better habits, and approach my goals with greater consistency.",
+                "More importantly, this project gave me the opportunity to approach a personal problem as a product manager: identify a need, design a workflow around user behavior, prioritize useful features, and use technology to solve a problem that matters.",
+                "Bookends remains a personal project, but its success is measured by something tangible: how effectively it helps me understand myself and improve the way I live.",
+              ],
+            },
+          ],
+          media: {
+            src: "/projects/bookends/screenshot-4.png",
+            caption: "The system in one place: plans, entries, and goals.",
+            size: "compact",
+            placeholderLabel: "[IMAGE PLACEHOLDER]",
+            placeholderNote:
+              "Screenshot: the combined planning, journaling, and goal-tracking view.",
+            aspectRatio: "2940 / 1598",
+          },
+        },
+      ],
+      closing: caseStudyClosing,
+    },
+    {
+      slug: "kazzi-soda",
+      eyebrow: "Case Study",
+      tagline: "Turning a growing drink trend into a physical product",
+      aboutTitle: "About the project",
+      about: [
+        "I noticed that cocktail enthusiasts had recipe cards, but dirty soda lovers didn't. Seeing an opportunity to bring the same concept to a growing drink category, I designed Kazzi Soda: a physical deck of dirty soda recipes made for experimenting with flavors at home.",
+        "I took the idea from concept to production, sourced manufacturers, calculated unit economics, and built an organic content strategy to introduce the product to customers.",
+      ],
+      meta: [
+        {
+          label: "Role",
+          value: "Entrepreneurship · Product Design · Sourcing · Marketing",
+        },
+        { label: "Type", value: "Consumer Product · E-commerce" },
+      ],
+      liveLabel: "Visit homesodabar.com ↗",
+      sections: [
+        {
+          number: "01",
+          title: "Identify the opportunity",
+          blocks: [
+            {
+              heading: "Bring cocktail culture to dirty soda",
+              body: [
+                "I saw an opportunity to make dirty soda recipes more accessible through a physical product. Inspired by cocktail recipe decks, I designed a collection of cards that made discovering and recreating drink combinations simple and fun.",
+              ],
+            },
+          ],
+          media: {
+            src: "/projects/kazzi/logo.png",
+            caption: "The Kazzi Soda brand mark designed for the recipe deck.",
+            size: "compact",
+            placeholderLabel: "[IMAGE PLACEHOLDER]",
+            placeholderNote: "Screenshot: the Kazzi Soda logo and brand identity.",
+            aspectRatio: "1200 / 640",
+          },
+        },
+        {
+          number: "02",
+          title: "Take the product to market",
+          blocks: [
+            {
+              heading: "Design, sourcing, and unit economics",
+              body: [
+                "I designed the complete recipe deck and sourced manufacturers for both the cards and their holders. Finding the right supplier meant comparing pricing, production options, and minimum order quantities.",
+                "I ultimately found a manufacturer willing to produce an initial run of just 50 units. I calculated unit economics across manufacturing, shipping, packaging, and selling price to understand the costs and viability of the product.",
+                "The finished product launched at approximately $25 per deck, available through Etsy and my own website.",
+              ],
+            },
+          ],
+          media: {
+            src: "/projects/kazzi/product-photo.jpg",
+            caption: "A product photo of the Kazzi Soda recipe deck.",
+            size: "compact",
+            placeholderLabel: "[IMAGE PLACEHOLDER]",
+            placeholderNote:
+              "Photo: the finished recipe deck and its holders.",
+            aspectRatio: "1600 / 1199",
+          },
+        },
+        {
+          number: "03",
+          title: "Experiment with organic marketing",
+          blocks: [
+            {
+              heading: "52 videos, one distribution strategy",
+              body: [
+                "I created 52 short-form videos demonstrating recipes from the deck, filming and publishing content across TikTok and YouTube.",
+                "Rather than relying on a single format, I experimented with hooks, on-screen text, background music, and video styles. I found that strong opening hooks and seamless loops tended to perform better, while energy-drink-related content often attracted more views on TikTok.",
+              ],
+            },
+            {
+              heading: "From attention to sales",
+              body: [
+                "The videos generated more than 170,000 views across TikTok and YouTube. Combined with Etsy and website sales, the initial launch generated five sales from the first 50-unit production run.",
+                "Although views haven't translated into consistent sales yet, the experiment gave me firsthand experience testing content, identifying engagement patterns, and evaluating the gap between attention and purchase intent.",
+              ],
+            },
+          ],
+          media: {
+            src: "/projects/kazzi/analytics-1.png",
+            caption: "Audience analytics for the Kazzi Soda video campaign.",
+            size: "compact",
+            placeholderLabel: "[IMAGE PLACEHOLDER]",
+            placeholderNote:
+              "Screenshot: TikTok analytics across the 52-video campaign.",
+            aspectRatio: "1600 / 1047",
+          },
+        },
+        {
+          number: "04",
+          title: "Learn through iteration",
+          blocks: [
+            {
+              heading: "Understanding the gap between views and revenue",
+              body: [
+                "Kazzi Soda is still available for purchase, and the business remains a work in progress.",
+                "Building Kazzi Soda taught me how to evaluate a product opportunity, manage manufacturing trade-offs, calculate unit economics, and test marketing strategies with real customers.",
+                "The next challenge is improving conversion: turning content engagement into purchases and finding a repeatable way to grow the business.",
+              ],
+            },
+          ],
+          media: {
+            src: "/projects/kazzi/analytics-2.png",
+            caption: "Reach and views analytics across the Kazzi Soda content.",
+            size: "compact",
+            placeholderLabel: "[IMAGE PLACEHOLDER]",
+            placeholderNote:
+              "Screenshot: reach and views across TikTok and YouTube.",
+            aspectRatio: "1600 / 1053",
+          },
+        },
+      ],
+      closing: caseStudyClosing,
     },
   ],
 

@@ -70,10 +70,27 @@ export function Preloader({
   const onRevealRef = useRef(onReveal);
   const controlsRef = useRef<AnimationPlaybackControlsWithThen | null>(null);
   const speedRef = useRef(1);
+  /**
+   * The latest scoped `animate` from `useAnimate`, held in a ref so the
+   * timeline effect below stays keyed to the mount instead of re-running
+   * whenever `animate`'s identity changes — `useAnimate` recreates it when
+   * MotionConfig's motion settings resolve.
+   *
+   * That re-run was the bug: the scoped `animate` resolves selector strings
+   * against `scope.current` and, unlike the global `animate`, does *not* fall
+   * back to `document` when the scope is detached — so once `phase` hit
+   * `"done"` (unmounting the overlay) a late re-run called
+   * `null.querySelectorAll(...)` and threw.
+   */
+  const animateRef = useRef(animate);
 
   useEffect(() => {
     onRevealRef.current = onReveal;
   });
+
+  useEffect(() => {
+    animateRef.current = animate;
+  }, [animate]);
 
   useEffect(() => {
     if (!shouldPlay) return;
@@ -93,8 +110,14 @@ export function Preloader({
     root.classList.add("overflow-hidden");
 
     let cancelled = false;
+    // True once there is nothing left to animate: the effect was cleaned up,
+    // or the overlay that owns the scope has unmounted (in which case the
+    // scoped `animate` would throw on a null scope — see `animateRef`).
+    const detached = () => cancelled || !scope.current;
+
     const run = (sequence: AnimationSequence): Promise<unknown> => {
-      const controls = animate(sequence);
+      if (detached()) return Promise.resolve();
+      const controls = animateRef.current(sequence);
       controls.speed = speedRef.current;
       controlsRef.current = controls;
       return controls.then(
@@ -111,6 +134,13 @@ export function Preloader({
         new Promise((r) => setTimeout(r, FONT_WAIT_MS)),
       ]);
       if (cancelled) return;
+      // The scope never attached, or was already torn down: reveal the hero
+      // directly rather than animating nothing and leaving the page stranded
+      // behind a stale overlay.
+      if (!scope.current) {
+        finish();
+        return;
+      }
 
       // Stage 1 + 2: intro, then the curtain sweeps across and covers all.
       await run([
@@ -172,7 +202,7 @@ export function Preloader({
           { duration: 0.5, ease: EASE_WIPE, at: 2.05 },
         ],
       ]);
-      if (cancelled) return;
+      if (detached()) return;
 
       // Everything below the curtain is now hidden: make the overlay inert
       // for the reveal, and let the hero begin its own entrance.
@@ -187,7 +217,7 @@ export function Preloader({
           { duration: 1.05, ease: EASE_WIPE },
         ],
       ]);
-      if (cancelled) return;
+      if (detached()) return;
 
       root.classList.remove("overflow-hidden");
       markPreloaderPlayed();
@@ -214,7 +244,7 @@ export function Preloader({
       el?.removeEventListener("click", skip);
       window.removeEventListener("keydown", onKey);
     };
-  }, [shouldPlay, animate, scope]);
+  }, [shouldPlay, scope]);
 
   if (phase === "done") return null;
 

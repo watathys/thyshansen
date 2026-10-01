@@ -7,6 +7,11 @@ import { motion } from "framer-motion";
 import { site, type Project } from "@/content/site";
 import { Container } from "@/components/layout/container";
 import { HERO_EASE, type HeroSlideData } from "@/components/projects/hero-slide";
+import { CaseStudyBody } from "@/components/case-study/case-study-body";
+import { CaseStudyIntro } from "@/components/case-study/case-study-intro";
+import { CaseStudySections } from "@/components/case-study/case-study-sections";
+import { CaseStudyClosing } from "@/components/case-study/case-study-closing";
+import { caseStudyTheme, nextCaseStudy } from "@/lib/projects";
 import { imageFitClass, initials } from "@/lib/media";
 import { cn } from "@/lib/utils";
 
@@ -20,8 +25,10 @@ import { cn } from "@/lib/utils";
  *      elements (`layoutId`), interpolating from their homepage positions
  *      into the case-study hero — title off-center left, media centered and
  *      flattened from the homepage's perspective tilt.
- *   3. Once the wipe lands, the top bar (← Back Home) and the white editorial
- *      body are revealed; scrolling rolls the hero up into the body.
+ *   3. Once the wipe lands, the top bar (← Back Home) and the case-study body
+ *      are revealed; scrolling rolls the hero up into the body. Projects with
+ *      a cinematic case study scroll into that long-form page on the project's
+ *      own light palette; the rest keep the white editorial summary.
  *
  * The overlay owns the URL via `pushStateWithoutRouter` (see
  * `lib/history-state.ts`) and closes through the browser Back button /
@@ -58,7 +65,7 @@ export function CaseStudyOverlay({
   }));
   // The wipe has landed — reveal the top bar, scroll pill, and body.
   const [wiped, setWiped] = useState(false);
-  // The hero has been scrolled up — flip the top bar onto the white body.
+  // The hero has been scrolled up — flip the top bar onto the body behind it.
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -98,6 +105,20 @@ export function CaseStudyOverlay({
   }, [viewport]);
 
   const heroH = viewport.h - TOP_BAR_H;
+
+  // Projects with a cinematic case study render that long-form body below the
+  // hero on their own light palette; everything else keeps the white editorial
+  // summary. `site.caseStudies` is already in this bundle, so only the
+  // server-resolved media flags ride in on the slide.
+  const study = slide.caseStudyMedia
+    ? site.caseStudies.find((entry) => entry.slug === project.slug)
+    : undefined;
+  const cinematic = Boolean(study && slide.caseStudyMedia);
+  // The body's own background — both variants are light, so the sticky top
+  // bar flips to near-black text once the body scrolls up behind it.
+  const theme = caseStudyTheme(project);
+  const bodyColor = cinematic ? theme.background : "#ffffff";
+  const barText = scrolled ? "text-zinc-900" : "text-white";
 
   const scrollToBody = () => {
     containerRef.current?.scrollTo({
@@ -143,9 +164,11 @@ export function CaseStudyOverlay({
         <motion.div
           aria-hidden="true"
           className="absolute inset-0 -z-10"
-          style={{ backgroundColor: scrolled ? "#ffffff" : slide.accent }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: wiped ? 1 : 0 }}
+          initial={{ opacity: 0, backgroundColor: slide.accent }}
+          animate={{
+            opacity: wiped ? 1 : 0,
+            backgroundColor: scrolled ? bodyColor : slide.accent,
+          }}
           transition={{ duration: 0.4 }}
         />
         <motion.div
@@ -159,7 +182,7 @@ export function CaseStudyOverlay({
             onClick={onClose}
             className={cn(
               "text-eyebrow rounded-md text-sm font-bold transition-opacity hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
-              scrolled ? "text-zinc-900" : "text-white",
+              barText,
             )}
           >
             ← Back Home
@@ -172,7 +195,7 @@ export function CaseStudyOverlay({
                 href={link.href}
                 className={cn(
                   "text-eyebrow rounded-md px-1 py-0.5 text-xs font-semibold transition-opacity hover:opacity-70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
-                  scrolled ? "text-zinc-900" : "text-white",
+                  barText,
                 )}
               >
                 {link.label}
@@ -276,45 +299,77 @@ export function CaseStudyOverlay({
         </motion.button>
       </section>
 
-      {/* ── Case study body · white editorial page, revealed after the wipe ── */}
-      <section className="relative bg-white text-zinc-900">
+      {/* ── Case study body · revealed after the wipe ──────────────────────
+          Projects with a cinematic case study scroll into that long-form page
+          on the project's own light palette; the rest keep the white
+          editorial summary. */}
+      <section className="relative">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: wiped ? 1 : 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
         >
-          <Container className="py-20 sm:py-28">
-            <p
-              className="text-eyebrow text-xs font-bold tracking-[0.2em]"
-              style={{ color: slide.accent }}
-            >
-              Case Study
-            </p>
-            <h1 className="mt-5 max-w-[20ch] font-serif text-[clamp(1.75rem,4vw,3.25rem)] font-bold leading-tight tracking-tight">
-              {project.oneLiner}
-            </h1>
+          {study && slide.caseStudyMedia ? (
+            <CaseStudyBody theme={theme} className="pb-20 sm:pb-28">
+              <div className="pt-20 sm:pt-28">
+                <CaseStudyIntro
+                  study={study}
+                  accentText={theme.accentText}
+                  liveUrl={project.url}
+                />
+              </div>
 
-            <div className="mt-12 grid gap-10 lg:grid-cols-[1fr_280px] lg:gap-16">
-              {/* Narrative (left). */}
-              <p className="text-lg leading-relaxed text-zinc-600">
-                {project.description}
-              </p>
+              <CaseStudySections
+                sections={study.sections}
+                media={slide.caseStudyMedia}
+                accent={theme.accent}
+                accentText={theme.accentText}
+              />
 
-              {/* Metadata (right). */}
-              <dl className="space-y-7 border-t border-zinc-200 pt-8 lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0">
-                {METADATA.map(({ label, key }) => (
-                  <div key={key}>
-                    <dt className="text-eyebrow text-xs font-bold tracking-[0.2em] text-zinc-400">
-                      {label}
-                    </dt>
-                    <dd className="mt-1.5 text-sm font-medium leading-relaxed text-zinc-800">
-                      {project[key]}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
+              <div className="mt-12 sm:mt-16">
+                <CaseStudyClosing
+                  closing={study.closing}
+                  accentText={theme.accentText}
+                  next={nextCaseStudy(project)}
+                />
+              </div>
+            </CaseStudyBody>
+          ) : (
+            <div className="bg-white text-zinc-900">
+              <Container className="py-20 sm:py-28">
+                <p
+                  className="text-eyebrow text-xs font-bold tracking-[0.2em]"
+                  style={{ color: slide.accent }}
+                >
+                  Case Study
+                </p>
+                <h1 className="mt-5 max-w-[20ch] font-serif text-[clamp(1.75rem,4vw,3.25rem)] font-bold leading-tight tracking-tight">
+                  {project.oneLiner}
+                </h1>
+
+                <div className="mt-12 grid gap-10 lg:grid-cols-[1fr_280px] lg:gap-16">
+                  {/* Narrative (left). */}
+                  <p className="text-lg leading-relaxed text-zinc-600">
+                    {project.description}
+                  </p>
+
+                  {/* Metadata (right). */}
+                  <dl className="space-y-7 border-t border-zinc-200 pt-8 lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0">
+                    {METADATA.map(({ label, key }) => (
+                      <div key={key}>
+                        <dt className="text-eyebrow text-xs font-bold tracking-[0.2em] text-zinc-400">
+                          {label}
+                        </dt>
+                        <dd className="mt-1.5 text-sm font-medium leading-relaxed text-zinc-800">
+                          {project[key]}
+                        </dd>
+                      </div>
+                    ))}
+                  </dl>
+                </div>
+              </Container>
             </div>
-          </Container>
+          )}
         </motion.div>
       </section>
     </motion.div>

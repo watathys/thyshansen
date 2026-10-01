@@ -8,6 +8,7 @@ import {
   useSpring,
 } from "framer-motion";
 import { imageFitClass, initials } from "@/lib/media";
+import { isCaseStudyPath } from "@/lib/history-state";
 import { cn } from "@/lib/utils";
 import {
   HERO_EASE,
@@ -90,7 +91,7 @@ function HeroMediaCard({
 
   // Project slides open a case study; info cards (intro / Creatives /
   // Experience) navigate to their target. Either way the card is clickable.
-  const isProject = slide.href.startsWith("/work/");
+  const isProject = isCaseStudyPath(slide.href);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (reduceMotion) return;

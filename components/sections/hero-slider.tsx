@@ -145,12 +145,12 @@ export function HeroSlider({ slides }: { slides: HeroSlideData[] }) {
   // the `lg` breakpoint — so callers can fall back to plain navigation.
   const openCaseStudy = useCallback(
     (slide: HeroSlideData): boolean => {
-      if (!slide.href.startsWith("/work/")) return false;
+      if (!isCaseStudyPath(slide.href)) return false;
       if (opened) return false;
       if (!window.matchMedia("(min-width: 1024px)").matches) return false;
 
       setOpened({ slug: slide.slug });
-      pushStateWithoutRouter(`/work/${slide.slug}`);
+      pushStateWithoutRouter(slide.href);
       return true;
     },
     [opened],

@@ -4,7 +4,12 @@ import { cn } from "@/lib/utils";
 type ButtonLinkProps = {
   href: string;
   children: React.ReactNode;
-  variant?: "primary" | "secondary";
+  /**
+   * `primary`/`secondary` are built for the site's dark theme. `onLight` is a
+   * solid near-black pill for light surfaces (e.g. a case study's paper-white
+   * body), where `primary`'s off-white fill would disappear.
+   */
+  variant?: "primary" | "secondary" | "onLight";
   className?: string;
 };
 
@@ -22,6 +27,7 @@ export function ButtonLink({
     primary: "bg-foreground text-background hover:bg-accent",
     secondary:
       "border border-border text-foreground hover:border-accent hover:text-accent",
+    onLight: "bg-zinc-900 text-white hover:bg-zinc-700",
   };
 
   const classes = cn(base, variants[variant], className);

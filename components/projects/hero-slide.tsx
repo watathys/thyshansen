@@ -9,6 +9,7 @@ import {
   type HeroSlideLink,
 } from "@/components/projects/hero-slide-links";
 import type { ImageFit } from "@/content/site";
+import type { MediaStatus } from "@/lib/media";
 
 /**
  * A single panel in the homepage hero presentation — the left editorial
@@ -37,6 +38,14 @@ export interface HeroSlideData {
   /** Optional looping video snippet; falls back to `image` in the media stage. */
   video?: string;
   hasImage: boolean;
+  /**
+   * Server-resolved media availability for this project's cinematic case
+   * study, parallel to its `sections` (see `site.caseStudies`). Present only
+   * for projects that have a dedicated case study — the card-to-case-study
+   * overlay uses it to render real footage or the placeholder frame without
+   * touching the filesystem.
+   */
+  caseStudyMedia?: Array<MediaStatus | null>;
   /** Full-page background color (white for the intro, tints for others). */
   background: string;
   /** Accent color: headline, eyebrow, CTA, and the left strip. */

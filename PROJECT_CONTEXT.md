@@ -32,6 +32,13 @@ Primary audience: PM recruiters, hiring managers, and referrers doing a
 - `site: SiteContent` — the actual data
 - `Project`, `ExperienceRole`, `Education`, `Photo`, `Video`, `SiteContent` —
   the types that shape it
+- `CaseStudy` (plus `CaseStudySection`, `CaseStudyBlock`, `CaseStudyMedia`,
+  `CaseStudyClosing`) — long-form cinematic case studies, held in
+  `site.caseStudies` and matched to a `Project` by `slug`. `CaseStudySection`
+  carries its prose as `blocks`, so a beat can either run straight through or
+  break into named sub-headings (`CaseStudyBlock.heading`, optional). A project
+  with a dedicated case study links there from its cards (see `lib/projects.ts`);
+  everything else falls back to the generic `/work/[slug]` detail page.
 
 Components import from `@/content/site` and render whatever is there. They
 **never** contain hardcoded name/copy/links/project data. If you need a new
@@ -60,6 +67,19 @@ component or page file.
   `app/globals.css` tokens and `Project.accent` — if something needs a
   new hue, add it as a project accent or extend the shared tokens, not an
   inline one-off.
+  - **Exception — cinematic case studies.** A `Project` that has an entry in
+    `site.caseStudies` renders its long-form page on the *project's own*
+    palette instead of the dark theme: `Project.background` as a paper-white
+    surface with dark `zinc` text, and `Project.accent` as the secondary
+    color. `caseStudyTheme()` in `lib/projects.ts` resolves it into three
+    roles — `background`, `accent` (big figures, decorative marks) and
+    `accentText` (an auto-darkened, WCAG-AA variant for small tracked labels,
+    via `readableAccent()` in `lib/color.ts`). Components take only the role
+    they need, or just the `accentText` for eyebrows and numbers. Both entry
+    points share the surface via `CaseStudyBody` — the standalone
+    `/projects/[slug]` page and the homepage's card-to-case-study overlay —
+    and `SiteHeader`/`SiteFooter` adopt the palette there via
+    `lightCaseStudyRoute()`.
 - **Typography**: an editorial serif (Playfair Display, `font-serif`) for
   headings/titles, and a geometric sans (Inter, `font-sans`) for body copy
   and UI. Both are wired via `next/font/google` in `app/layout.tsx`. Don't
@@ -102,10 +122,11 @@ components/layout/        # header, footer, container
 components/ui/            # generic primitives (button, tag, section heading)
 components/sections/      # page-level sections (hero, about, projects, ...)
 components/projects/      # project-specific pieces
+components/case-study/    # cinematic case-study pieces (numbered sections, media frames, stats, closing)
 components/experience/    # experience-specific pieces
 components/gallery/       # photo grid
 components/videos/        # video embed
-app/                      # routes: / , /about , /projects , /projects/[slug] , /photography , /videography , /gallery , /resume
+app/                      # routes: / , /about , /projects , /projects/[slug] (cinematic case study when one exists, else the generic detail page) , /photography , /videography , /gallery , /resume
 ```
 
 - Sections (`components/sections/*`) compose smaller pieces and read from
