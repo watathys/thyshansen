@@ -8,7 +8,7 @@ import {
   useSpring,
 } from "framer-motion";
 import { imageFitClass, initials } from "@/lib/media";
-import { isCaseStudyPath } from "@/lib/history-state";
+import { isCaseStudyPath, isOverlayPath } from "@/lib/history-state";
 import { cn } from "@/lib/utils";
 import {
   HERO_EASE,
@@ -89,9 +89,9 @@ function HeroMediaCard({
   const springX = useSpring(rotateX, PARALLAX_SPRING);
   const springY = useSpring(rotateY, PARALLAX_SPRING);
 
-  // Project slides open a case study; info cards (intro / Creatives /
-  // Experience) navigate to their target. Either way the card is clickable.
-  const isProject = isCaseStudyPath(slide.href);
+  // Project slides and featured teasers (Creatives / Work Experience)
+  // open the transition overlay; others navigate to their target.
+  const hasOverlay = isOverlayPath(slide.href);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (reduceMotion) return;
@@ -120,7 +120,7 @@ function HeroMediaCard({
       layoutId={`project-media-${slide.slug}`}
       role="button"
       tabIndex={0}
-      aria-label={isProject ? `Open ${slide.title} case study` : `Go to ${slide.title}`}
+      aria-label={hasOverlay ? `Open ${slide.title}` : `Go to ${slide.title}`}
       onClick={() => onOpen?.(slide)}
       onKeyDown={onKeyDown}
       initial={false}

@@ -99,7 +99,7 @@ component or page file.
   `preserve-3d` transform (see `HeroMediaStage`) — flat on touch /
   reduced-motion / < lg.
 - **Page-load preloader** (`components/preloader/`): a single Framer Motion
-  `useAnimate` timeline — dark intro (outlined name that fills, media cards
+  timeline — dark intro (outlined name that fills, media cards
   resolving from skeletons) → slate-teal curtain wipe (`clip-path`) → unfurl
   that reveals the hero, whose own entrance is gated on the `onReveal`
   callback. Plays on full loads/reloads only (module flag, not on client

@@ -2,9 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import {
+  animate,
   motion,
   stagger,
-  useAnimate,
   type AnimationPlaybackControlsWithThen,
   type AnimationSequence,
 } from "framer-motion";
@@ -52,6 +52,35 @@ const FONT_WAIT_MS = 1200;
 
 type Phase = "intro" | "reveal" | "done";
 
+/**
+ * `useAnimate`'s scoped `animate` resolves selector strings with
+ * `scope.current.querySelectorAll` and throws once that node is gone — it
+ * does not fall back to `document`. Resolve against the live root and pass
+ * real elements to the global `animate` instead.
+ */
+function resolveSequence(
+  root: ParentNode | null,
+  sequence: AnimationSequence,
+): AnimationSequence | null {
+  if (!root) return null;
+  const resolved: AnimationSequence = [];
+  for (const segment of sequence) {
+    if (!Array.isArray(segment) || typeof segment[0] !== "string") {
+      resolved.push(segment);
+      continue;
+    }
+    const elements = Array.from(root.querySelectorAll(segment[0]));
+    if (elements.length === 0) continue;
+    const [, keyframes, options] = segment;
+    resolved.push(
+      (options
+        ? [elements, keyframes, options]
+        : [elements, keyframes]) as AnimationSequence[number],
+    );
+  }
+  return resolved.length > 0 ? resolved : null;
+}
+
 export function Preloader({
   cards,
   onReveal,
@@ -60,7 +89,7 @@ export function Preloader({
   /** Fired when the curtain starts uncovering the hero. */
   onReveal: () => void;
 }) {
-  const [scope, animate] = useAnimate<HTMLDivElement>();
+  const rootRef = useRef<HTMLDivElement>(null);
   // Decided once per mount: only a full page load (module state fresh)
   // plays the intro. Kept separate from `phase` so phase changes mid-timeline
   // don't re-run the effect below.
@@ -70,32 +99,20 @@ export function Preloader({
   const onRevealRef = useRef(onReveal);
   const controlsRef = useRef<AnimationPlaybackControlsWithThen | null>(null);
   const speedRef = useRef(1);
-  /**
-   * The latest scoped `animate` from `useAnimate`, held in a ref so the
-   * timeline effect below stays keyed to the mount instead of re-running
-   * whenever `animate`'s identity changes — `useAnimate` recreates it when
-   * MotionConfig's motion settings resolve.
-   *
-   * That re-run was the bug: the scoped `animate` resolves selector strings
-   * against `scope.current` and, unlike the global `animate`, does *not* fall
-   * back to `document` when the scope is detached — so once `phase` hit
-   * `"done"` (unmounting the overlay) a late re-run called
-   * `null.querySelectorAll(...)` and threw.
-   */
-  const animateRef = useRef(animate);
 
   useEffect(() => {
     onRevealRef.current = onReveal;
   });
 
   useEffect(() => {
-    animateRef.current = animate;
-  }, [animate]);
-
-  useEffect(() => {
     if (!shouldPlay) return;
 
+    const releaseScroll = () => {
+      document.documentElement.classList.remove("overflow-hidden");
+    };
+
     const finish = () => {
+      releaseScroll();
       markPreloaderPlayed();
       onRevealRef.current();
       setPhase("done");
@@ -106,44 +123,49 @@ export function Preloader({
       return;
     }
 
-    const root = document.documentElement;
-    root.classList.add("overflow-hidden");
+    document.documentElement.classList.add("overflow-hidden");
 
     let cancelled = false;
-    // True once there is nothing left to animate: the effect was cleaned up,
-    // or the overlay that owns the scope has unmounted (in which case the
-    // scoped `animate` would throw on a null scope — see `animateRef`).
-    const detached = () => cancelled || !scope.current;
+    let fontTimer: ReturnType<typeof setTimeout> | undefined;
+    const alive = () => !cancelled && !!rootRef.current?.isConnected;
 
     const run = (sequence: AnimationSequence): Promise<unknown> => {
-      if (detached()) return Promise.resolve();
-      const controls = animateRef.current(sequence);
-      controls.speed = speedRef.current;
-      controlsRef.current = controls;
-      return controls.then(
-        () => undefined,
-        () => undefined,
-      );
+      const resolved = resolveSequence(rootRef.current, sequence);
+      if (!alive() || !resolved) return Promise.resolve();
+      try {
+        const controls = animate(resolved);
+        controls.speed = speedRef.current;
+        controlsRef.current = controls;
+        return controls.then(
+          () => undefined,
+          () => undefined,
+        );
+      } catch {
+        return Promise.resolve();
+      }
     };
 
     const play = async () => {
-      // Give the display serif a moment so the outline doesn't reflow
-      // mid-animation (bounded — never blocks the intro for long).
-      await Promise.race([
-        document.fonts.ready,
-        new Promise((r) => setTimeout(r, FONT_WAIT_MS)),
-      ]);
-      if (cancelled) return;
-      // The scope never attached, or was already torn down: reveal the hero
-      // directly rather than animating nothing and leaving the page stranded
-      // behind a stale overlay.
-      if (!scope.current) {
-        finish();
-        return;
-      }
+      try {
+        // Give the display serif a moment so the outline doesn't reflow
+        // mid-animation (bounded — never blocks the intro for long).
+        await Promise.race([
+          document.fonts.ready,
+          new Promise((resolve) => {
+            fontTimer = setTimeout(resolve, FONT_WAIT_MS);
+          }),
+        ]);
+        if (cancelled) return;
+        // The root never attached, or was already torn down: reveal the hero
+        // directly rather than animating nothing and leaving the page stranded
+        // behind a stale overlay.
+        if (!alive()) {
+          finish();
+          return;
+        }
 
-      // Stage 1 + 2: intro, then the curtain sweeps across and covers all.
-      await run([
+        // Stage 1 + 2: intro, then the curtain sweeps across and covers all.
+        await run([
         [
           "[data-pl=line]",
           { y: ["110%", "0%"] },
@@ -201,27 +223,30 @@ export function Preloader({
           { opacity: 0, y: -16 },
           { duration: 0.5, ease: EASE_WIPE, at: 2.05 },
         ],
-      ]);
-      if (detached()) return;
+        ]);
+        if (!alive()) return;
 
-      // Everything below the curtain is now hidden: make the overlay inert
-      // for the reveal, and let the hero begin its own entrance.
-      setPhase("reveal");
-      onRevealRef.current();
+        // Everything below the curtain is now hidden: make the overlay inert
+        // for the reveal, and let the hero begin its own entrance.
+        setPhase("reveal");
+        onRevealRef.current();
 
-      // Stage 3: unfurl — the curtain's trailing edge sweeps to the right.
-      await run([
-        [
-          "[data-pl=curtain]",
-          { clipPath: CURTAIN_GONE },
-          { duration: 1.05, ease: EASE_WIPE },
-        ],
-      ]);
-      if (detached()) return;
+        // Stage 3: unfurl — the curtain's trailing edge sweeps to the right.
+        await run([
+          [
+            "[data-pl=curtain]",
+            { clipPath: CURTAIN_GONE },
+            { duration: 1.05, ease: EASE_WIPE },
+          ],
+        ]);
+        if (!alive()) return;
 
-      root.classList.remove("overflow-hidden");
-      markPreloaderPlayed();
-      setPhase("done");
+        releaseScroll();
+        markPreloaderPlayed();
+        setPhase("done");
+      } catch {
+        if (!cancelled) finish();
+      }
     };
 
     play();
@@ -233,24 +258,25 @@ export function Preloader({
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape" || e.key === "Enter") skip();
     };
-    const el = scope.current;
+    const el = rootRef.current;
     el?.addEventListener("click", skip);
     window.addEventListener("keydown", onKey);
 
     return () => {
       cancelled = true;
+      if (fontTimer) clearTimeout(fontTimer);
       controlsRef.current?.stop();
-      root.classList.remove("overflow-hidden");
+      releaseScroll();
       el?.removeEventListener("click", skip);
       window.removeEventListener("keydown", onKey);
     };
-  }, [shouldPlay, scope]);
+  }, [shouldPlay]);
 
   if (phase === "done") return null;
 
   return (
     <div
-      ref={scope}
+      ref={rootRef}
       data-preloader
       role="status"
       aria-live="polite"

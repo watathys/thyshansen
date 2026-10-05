@@ -17,9 +17,9 @@ import { Preloader } from "@/components/preloader/preloader";
 import { hasPreloaderPlayed } from "@/components/preloader/preloader-state";
 import { cn } from "@/lib/utils";
 import {
-  isCaseStudyPath,
+  isOverlayPath,
   pushStateWithoutRouter,
-  slugFromCaseStudyPath,
+  slugFromOverlayPath,
 } from "@/lib/history-state";
 
 /**
@@ -140,12 +140,13 @@ export function HeroSlider({ slides }: { slides: HeroSlideData[] }) {
 
   const router = useRouter();
 
-  // Open a project's case study in the shared-element overlay. Returns
-  // `false` when nothing was opened — not a project, already open, or below
-  // the `lg` breakpoint — so callers can fall back to plain navigation.
+  // Open a project's case study or editorial card in the shared-element
+  // overlay. Returns `false` when nothing was opened — not an overlay path,
+  // already open, or below the `lg` breakpoint — so callers can fall back
+  // to plain navigation.
   const openCaseStudy = useCallback(
     (slide: HeroSlideData): boolean => {
-      if (!isCaseStudyPath(slide.href)) return false;
+      if (!isOverlayPath(slide.href)) return false;
       if (opened) return false;
       if (!window.matchMedia("(min-width: 1024px)").matches) return false;
 
@@ -193,8 +194,8 @@ export function HeroSlider({ slides }: { slides: HeroSlideData[] }) {
   useEffect(() => {
     const onPopState = () => {
       const pathname = window.location.pathname;
-      if (isCaseStudyPath(pathname)) {
-        const slug = slugFromCaseStudyPath(pathname);
+      if (isOverlayPath(pathname)) {
+        const slug = slugFromOverlayPath(pathname);
         const slide = slides.find((s) => s.slug === slug);
         if (slide) {
           setOpened({ slug: slide.slug });
@@ -466,7 +467,7 @@ export function HeroSlider({ slides }: { slides: HeroSlideData[] }) {
 
         {/* Card-to-case-study FLIP overlay (desktop only). */}
         <AnimatePresence>
-          {opened && openedSlide && openedProject ? (
+          {opened && openedSlide ? (
             <CaseStudyOverlay
               key={opened.slug}
               slide={openedSlide}

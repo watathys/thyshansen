@@ -74,7 +74,7 @@ export default function Home() {
   const contactSlide: HeroSlideData = {
     slug: "contact",
     eyebrow: site.heroContact.eyebrow,
-    title: "Let's talk product.",
+    title: site.heroContact.title ?? "Let's talk product",
     description: site.heroContact.description,
     href: site.heroContact.href,
     ctaLabel: site.heroContact.ctaLabel,

@@ -9,6 +9,7 @@ import { CaseStudyBody } from "@/components/case-study/case-study-body";
 import { CaseStudyHero } from "@/components/case-study/case-study-hero";
 import { CaseStudySections } from "@/components/case-study/case-study-sections";
 import { CaseStudyClosing } from "@/components/case-study/case-study-closing";
+import { SideProjectsBody } from "@/components/projects/side-projects-body";
 
 /**
  * A project's cinematic case study, composed from `site.caseStudies`. All copy
@@ -26,6 +27,14 @@ export function CaseStudyPage({ slug }: { slug: string }) {
 
   const { study, project } = data;
   const theme = caseStudyTheme(project);
+
+  if (slug === "side-projects") {
+    return (
+      <CaseStudyBody theme={theme} className="pb-20 sm:pb-28">
+        <SideProjectsBody theme={theme} showHeader={true} />
+      </CaseStudyBody>
+    );
+  }
 
   return (
     <CaseStudyBody theme={theme} className="pb-20 sm:pb-28">

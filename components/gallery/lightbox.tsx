@@ -111,10 +111,11 @@ export function Lightbox({
 
   return (
     <div
+      data-lightbox
       role="dialog"
       aria-modal="true"
       aria-label="Photo Lightbox"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md transition-opacity"
+      className="fixed inset-0 z-[60] flex items-center justify-center bg-black/90 backdrop-blur-md transition-opacity"
       onClick={onClose}
     >
       {/* Lightbox Modal Content */}
@@ -208,12 +209,11 @@ export function Lightbox({
         </div>
 
         {/* Footer Caption */}
-        <div className="text-center text-white/90">
-          <p className="text-sm font-medium">{photo.alt}</p>
-          {photo.caption ? (
-            <p className="mt-1 text-xs text-white/60">{photo.caption}</p>
-          ) : null}
-        </div>
+        {photo.caption ? (
+          <div className="text-center text-white/90">
+            <p className="text-sm font-medium">{photo.caption}</p>
+          </div>
+        ) : null}
       </div>
     </div>
   );

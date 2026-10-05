@@ -10,7 +10,7 @@ export function Contact() {
         <div className="flex flex-col items-start gap-6">
           <SectionHeading
             eyebrow="Contact"
-            title="Let's talk product."
+            title="Let's talk product"
             description="Open to product management internships and full-time roles. The fastest way to reach me is email, LinkedIn, or the direct form below."
           />
           <ContactButtons />

@@ -11,6 +11,9 @@ import { CaseStudyBody } from "@/components/case-study/case-study-body";
 import { CaseStudyIntro } from "@/components/case-study/case-study-intro";
 import { CaseStudySections } from "@/components/case-study/case-study-sections";
 import { CaseStudyClosing } from "@/components/case-study/case-study-closing";
+import { CreativesOverlayBody } from "@/components/projects/creatives-overlay-body";
+import { ExperienceOverlayBody } from "@/components/projects/experience-overlay-body";
+import { SideProjectsBody } from "@/components/projects/side-projects-body";
 import { caseStudyTheme, nextCaseStudy } from "@/lib/projects";
 import { imageFitClass, initials } from "@/lib/media";
 import { cn } from "@/lib/utils";
@@ -54,7 +57,7 @@ export function CaseStudyOverlay({
   onClose,
 }: {
   slide: HeroSlideData;
-  project: Project;
+  project?: Project;
   onClose: () => void;
 }) {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -82,10 +85,14 @@ export function CaseStudyOverlay({
     return () => root.classList.remove("overflow-hidden");
   }, []);
 
-  // Escape closes (delegates to the same popstate-driven path).
+  // Escape closes (delegates to the same popstate-driven path) unless an
+  // inner modal (e.g. Photo Lightbox) is open and handling Escape.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {
+        if (document.querySelector("[data-lightbox]")) return;
+        onClose();
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -108,17 +115,23 @@ export function CaseStudyOverlay({
 
   // Projects with a cinematic case study render that long-form body below the
   // hero on their own light palette; everything else keeps the white editorial
-  // summary. `site.caseStudies` is already in this bundle, so only the
-  // server-resolved media flags ride in on the slide.
-  const study = slide.caseStudyMedia
+  // summary or the dark background for Creatives / Work Experience.
+  const study = slide.caseStudyMedia && project
     ? site.caseStudies.find((entry) => entry.slug === project.slug)
     : undefined;
-  const cinematic = Boolean(study && slide.caseStudyMedia);
-  // The body's own background — both variants are light, so the sticky top
-  // bar flips to near-black text once the body scrolls up behind it.
-  const theme = caseStudyTheme(project);
-  const bodyColor = cinematic ? theme.background : "#ffffff";
-  const barText = scrolled ? "text-zinc-900" : "text-white";
+  const cinematic = Boolean(study && slide.caseStudyMedia && project);
+  const theme = project ? caseStudyTheme(project) : null;
+  const isDarkBody = slide.slug === "creatives" || slide.slug === "work-experience";
+  const bodyColor = cinematic && theme
+    ? theme.background
+    : isDarkBody
+      ? "#3d5a70"
+      : "#ffffff";
+  const barText = scrolled
+    ? isDarkBody
+      ? "text-white"
+      : "text-zinc-900"
+    : "text-white";
 
   const scrollToBody = () => {
     containerRef.current?.scrollTo({
@@ -217,7 +230,7 @@ export function CaseStudyOverlay({
           transition={{ duration: 0.7, ease: HERO_EASE, delay: 0.55 }}
           className="text-eyebrow absolute left-8 top-[8%] z-20 max-w-[34vw] text-left text-xs font-semibold tracking-[0.2em] text-white/80 sm:left-12 lg:left-16"
         >
-          {project.tags.join(" · ")}
+          {project ? project.tags.join(" · ") : slide.eyebrow}
         </motion.p>
 
         {/* Project title — shared element, off-center left. */}
@@ -284,7 +297,7 @@ export function CaseStudyOverlay({
           animate={{ opacity: wiped && !scrolled ? 1 : 0, y: wiped ? 0 : 16 }}
           transition={{ duration: 0.5, ease: HERO_EASE }}
           className="absolute bottom-8 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-2 text-white"
-          aria-label="Scroll to case study"
+          aria-label={`Scroll to ${slide.title}`}
         >
           <span className="text-eyebrow text-[10px] font-semibold tracking-[0.2em]">
             Scroll
@@ -302,14 +315,17 @@ export function CaseStudyOverlay({
       {/* ── Case study body · revealed after the wipe ──────────────────────
           Projects with a cinematic case study scroll into that long-form page
           on the project's own light palette; the rest keep the white
-          editorial summary. */}
+          editorial summary. Creatives and Work Experience render their
+          dedicated media and career timeline sections. */}
       <section className="relative">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: wiped ? 1 : 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
         >
-          {study && slide.caseStudyMedia ? (
+          {slide.slug === "side-projects" && theme ? (
+            <SideProjectsBody theme={theme} showHeader={false} />
+          ) : study && slide.caseStudyMedia && project && theme ? (
             <CaseStudyBody theme={theme} className="pb-20 sm:pb-28">
               <div className="pt-20 sm:pt-28">
                 <CaseStudyIntro
@@ -334,7 +350,11 @@ export function CaseStudyOverlay({
                 />
               </div>
             </CaseStudyBody>
-          ) : (
+          ) : slide.slug === "creatives" ? (
+            <CreativesOverlayBody slide={slide} />
+          ) : slide.slug === "work-experience" ? (
+            <ExperienceOverlayBody slide={slide} />
+          ) : project ? (
             <div className="bg-white text-zinc-900">
               <Container className="py-20 sm:py-28">
                 <p
@@ -369,7 +389,7 @@ export function CaseStudyOverlay({
                 </div>
               </Container>
             </div>
-          )}
+          ) : null}
         </motion.div>
       </section>
     </motion.div>

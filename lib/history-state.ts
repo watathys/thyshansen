@@ -34,3 +34,27 @@ export function slugFromCaseStudyPath(pathname: string): string | null {
   const match = pathname.match(/^\/(?:work|projects)\/([^/]+)$/);
   return match ? decodeURIComponent(match[1]) : null;
 }
+
+/**
+ * True when `pathname` points at an overlay-supported route: either a project
+ * case study (/work/:slug, /projects/:slug) or an editorial teaser card
+ * (/gallery for Creatives, /resume for Work Experience).
+ */
+export function isOverlayPath(pathname: string): boolean {
+  return (
+    isCaseStudyPath(pathname) ||
+    pathname === "/gallery" ||
+    pathname === "/resume"
+  );
+}
+
+/**
+ * Extracts the slide slug corresponding to an overlay pathname.
+ */
+export function slugFromOverlayPath(pathname: string): string | null {
+  if (pathname === "/gallery") return "creatives";
+  if (pathname === "/resume") return "work-experience";
+  return slugFromCaseStudyPath(pathname);
+}
+
+

@@ -52,6 +52,8 @@ export interface ProjectLink {
 export interface HeroInfoCard {
   /** Small tracked label shown above the title, e.g. "About Me". */
   eyebrow: string;
+  /** Primary headline for the card (optional, defaults to preset title). */
+  title?: string;
   /** Short paragraph shown under the title. */
   description: string;
   /** CTA text before the arrow, e.g. "About Me", "View Experience". */
@@ -294,6 +296,58 @@ export interface CaseStudy {
   closing: CaseStudyClosing;
 }
 
+export interface SideProjectPhoto {
+  src: string;
+  alt: string;
+  caption?: string;
+  aspectRatio: string;
+}
+
+export interface InlineLink {
+  text: string;
+  url: string;
+}
+
+export interface SideProjectParagraph {
+  text: string;
+  links?: InlineLink[];
+}
+
+export type SideProjectParagraphContent = string | SideProjectParagraph;
+
+export interface SideProjectStep {
+  kicker: string;
+  title: string;
+  body: SideProjectParagraphContent[];
+  photo?: SideProjectPhoto;
+  subheading?: string;
+  subBody?: SideProjectParagraphContent[];
+}
+
+export interface SideProjectItem {
+  id: string;
+  name: string;
+  tagline: string;
+  aboutTitle: string;
+  about: string[];
+  meta: Fact[];
+  visitLink?: {
+    label: string;
+    href: string;
+  };
+  photo?: SideProjectPhoto;
+  steps: SideProjectStep[];
+}
+
+export interface SideProjectsData {
+  slug: string;
+  eyebrow: string;
+  title: string;
+  lede: string;
+  projects: SideProjectItem[];
+  closing: CaseStudyClosing;
+}
+
 export interface SiteContent {
   name: string;
   tagline: string;
@@ -324,6 +378,8 @@ export interface SiteContent {
   heroExperience: HeroInfoCard;
   /** The homepage hero slider's Contact card — links to email. */
   heroContact: HeroInfoCard;
+  /** Dedicated content for the multi-project "Side Projects" presentation. */
+  sideProjects: SideProjectsData;
   /**
    * Explicit order of the homepage hero's slides, by slug. `"intro"`,
    * `"creatives"`, `"work-experience"`, and `"contact"` are the info cards;
@@ -372,10 +428,11 @@ export const site: SiteContent = {
   bio:
     "I'm a Business Strategic Management student with a Product Management emphasis at BYU Marriott. I combine quantitative strategy, market research, and hands-on software development to take products from zero to one and drive measurable impact.",
   headshot: "/headshot.jpg",
+  resumeImage: "/work-experience.png",
   resumeUrl: "/resume.pdf",
   email: "watathys@gmail.com",
   linkedin: "https://linkedin.com/in/thysh",
-  instagram: "https://www.instagram.com/th.y.s/",
+  instagram: "",
   url: "https://thyshansen.com",
 
   // Kept minimal by design: the header only ever shows the name (links
@@ -385,14 +442,14 @@ export const site: SiteContent = {
 
   preloader: {
     role: "Product-minded strategist",
-    caption: "Psst… the case studies are worth a click.",
+    caption: "Let's talk :)",
     label: "Loading portfolio",
   },
 
   heroIntro: {
     eyebrow: "About Me",
     description:
-      "I'm Thys — I study Business Strategic Management at BYU. See my projects and work experience below.",
+      "Business strategy student at BYU who builds and ships products — focused on product management, full-stack prototyping, and zero-to-one ventures.",
     ctaLabel: "About Me",
     href: "/about",
     background: "#f1e9da",
@@ -421,8 +478,9 @@ export const site: SiteContent = {
 
   heroContact: {
     eyebrow: "Contact",
+    title: "Let's talk product",
     description:
-      "Open to product management internships and full-time roles. The fastest way to reach me is email, LinkedIn, or Instagram.",
+      "Open to product management internships and full-time roles. The fastest way to reach me is email or LinkedIn.",
     ctaLabel: "Email Me",
     href: "mailto:watathys@gmail.com",
     background: "#e6eaf0",
@@ -430,17 +488,170 @@ export const site: SiteContent = {
     links: [
       { label: "Email", url: "mailto:watathys@gmail.com" },
       { label: "LinkedIn", url: "https://linkedin.com/in/thysh" },
-      { label: "Instagram", url: "https://www.instagram.com/th.y.s/" },
     ],
   },
 
-  // Kazzi Soda and "What I'm working on now" intentionally interleave with
+  sideProjects: {
+    slug: "side-projects",
+    eyebrow: "Side Projects",
+    title: "Side projects",
+    lede: "Products I've built, tested, and sold alongside school, and what the numbers taught me.",
+    projects: [
+      {
+        id: "kazzi-soda",
+        name: "Kazzi Soda",
+        tagline: "Turning a growing drink trend into a physical product",
+        aboutTitle: "About the project",
+        about: [
+          "I noticed that cocktail enthusiasts had recipe cards, but dirty soda lovers didn't. Seeing an opportunity to bring the same concept to a growing drink category, I designed Kazzi Soda: a physical deck of dirty soda recipes made for experimenting with flavors at home.",
+          "I took the idea from concept to production, sourced manufacturers, calculated unit economics, and built an organic content strategy to introduce the product to customers.",
+        ],
+        meta: [
+          {
+            label: "Role",
+            value: "Entrepreneurship · Product Design · Sourcing · Marketing",
+          },
+          {
+            label: "Type",
+            value: "Consumer Product · E-commerce",
+          },
+        ],
+        visitLink: {
+          label: "Visit homesodabar.com ↗",
+          href: "https://homesodabar.com/",
+        },
+        photo: {
+          src: "/projects/side-projects/kazziSoda2.jpg",
+          alt: "Kazzi Soda dirty soda recipe cards fanned out showing colorful drink recipes",
+          caption: "The finished Kazzi Soda dirty soda recipe card deck",
+          aspectRatio: "2390 / 1792",
+        },
+        steps: [
+          {
+            kicker: "01 · Identify the opportunity",
+            title: "Bring cocktail culture to dirty soda",
+            body: [
+              "I saw an opportunity to make dirty soda recipes more accessible through a physical product. Inspired by cocktail recipe decks, I designed a collection of cards that made discovering and recreating drink combinations simple and fun.",
+            ],
+          },
+          {
+            kicker: "02 · Take the product to market",
+            title: "Design, sourcing, and unit economics",
+            body: [
+              "I designed the complete recipe deck and sourced manufacturers for both the cards and their holders. Finding the right supplier meant comparing pricing, production options, and minimum order quantities.",
+              "I ultimately found a manufacturer willing to produce an initial run of just 50 units. I calculated unit economics across manufacturing, shipping, packaging, and selling price to understand the costs and viability of the product.",
+              "The finished product launched at approximately $25 per deck, available through Etsy and my own website.",
+            ],
+          },
+          {
+            kicker: "03 · Experiment with organic marketing",
+            title: "52 videos, one distribution strategy",
+            body: [
+              "I created 52 short-form videos demonstrating recipes from the deck, filming and publishing content across TikTok and YouTube.",
+              "Rather than relying on a single format, I experimented with hooks, on-screen text, background music, and video styles. I found that strong opening hooks and seamless loops tended to perform better, while energy-drink-related content often attracted more views on TikTok.",
+            ],
+            photo: {
+              src: "/projects/side-projects/kazziSoda1.png",
+              alt: "Kazzi Soda YouTube analytics showing 112K views and watch time across the campaign",
+              caption: "Kazzi Soda organic video reach and audience analytics",
+              aspectRatio: "1714 / 1122",
+            },
+            subheading: "From attention to sales",
+            subBody: [
+              {
+                text: "The videos generated more than 170,000 views across TikTok and YouTube. Combined with Etsy and website sales, the initial launch generated five sales from the first 50-unit production run.",
+                links: [
+                  { text: "TikTok", url: "https://www.tiktok.com/@kazzisoda" },
+                  { text: "YouTube", url: "https://www.youtube.com/@KazziSoda" },
+                ],
+              },
+              "Although views haven't translated into consistent sales yet, the experiment gave me firsthand experience testing content, identifying engagement patterns, and evaluating the gap between attention and purchase intent.",
+            ],
+          },
+          {
+            kicker: "04 · Learn through iteration",
+            title: "Understanding the gap between views and revenue",
+            body: [
+              "Kazzi Soda is still available for purchase, and the business remains a work in progress.",
+              "Building Kazzi Soda taught me how to evaluate a product opportunity, manage manufacturing trade-offs, calculate unit economics, and test marketing strategies with real customers.",
+              "The next challenge is improving conversion: turning content engagement into purchases and finding a repeatable way to grow the business.",
+            ],
+          },
+        ],
+      },
+      {
+        id: "tokyo-treasures",
+        name: "Tokyo Treasures",
+        tagline:
+          "Finding underpriced products, testing demand, and expanding into new categories since 2020",
+        aboutTitle: "About the project",
+        about: [
+          "I started Tokyo Treasures in high school during COVID. I had nothing but free time and wanted to make the most of it and earn money, so I looked for products I could buy for less than they were worth and resell. Over the next few years it grew from a single idea into three product lines, with more than $9,600 in total sales.",
+        ],
+        meta: [
+          {
+            label: "Role",
+            value: "Sourcing · Pricing · Product Selection · Operations",
+          },
+          {
+            label: "Type",
+            value: "Reselling · E-commerce (eBay)",
+          },
+          {
+            label: "Results",
+            value:
+              "$9,600+ in total sales · 119 orders · 113 buyers · 100% positive reviews",
+          },
+        ],
+        photo: {
+          src: "/projects/side-projects/tokyoTreasuresPhoto.png",
+          alt: "Tokyo Treasures eBay profile banner showing 100% positive feedback and 121 items sold",
+          caption: "Tokyo Treasures storefront and track record on eBay",
+          aspectRatio: "2612 / 590",
+        },
+        steps: [
+          {
+            kicker: "Phase 1 · Find the gap",
+            title: "LEGO sets",
+            body: [
+              "I saw an opportunity in buying and reselling LEGO sets. It was my first test of whether I could consistently find products priced below what buyers would pay. I sold 23 sets, averaging about $92 each.",
+            ],
+          },
+          {
+            kicker: "Phase 2 · Add value to the product",
+            title: "Pokémon cards and PSA grading",
+            body: [
+              "I expanded into Pokémon cards by buying underpriced ones, sending the best to PSA for grading, and selling them. I had researched the market and knew that highly graded cards can command much higher prices, and I checked my cards were in excellent condition before paying to grade them.",
+              "To price each card, I looked at what the same card had recently sold for and priced mine in line with those sales. The grading bet paid off: my 16 PSA-graded cards averaged about $126 per sale, compared with about $16 for ungraded cards. The top sale was a PSA 9 Charizard for $549.99.",
+            ],
+          },
+          {
+            kicker: "Phase 3 · Open a new supply channel",
+            title: "Buying in Japan, selling in the United States",
+            body: [
+              "I then expanded to items I bought secondhand in Japan, looking for things that would sell for more in the United States than they cost in Japan. This phase was my busiest: 2024 was my highest-volume year, with 50 sales across Japanese video games, anime figures, collectibles, and more.",
+            ],
+          },
+          {
+            kicker: "Takeaways",
+            title: "What I learned",
+            body: [
+              "Tokyo Treasures taught me to validate demand with real sales data before setting a price, to decide what to buy based on what has already worked, and to keep customers happy while the product mix changes. Each new category started with a small test, and I kept the ones that worked.",
+            ],
+          },
+        ],
+      },
+    ],
+    closing: caseStudyClosing,
+  },
+
+  // Side Projects and other info cards intentionally interleave with
   // the Creatives teaser: info cards sit between projects in the hero.
   heroSlideOrder: [
     "intro",
     "junbi",
+    "side-projects",
     "bookends",
-    "kazzi-soda",
     "creatives",
     "games",
     "work-experience",
@@ -506,6 +717,36 @@ export const site: SiteContent = {
       accent: "#1bd3a9",
     },
     {
+      slug: "side-projects",
+      name: "Side Projects",
+      featured: false,
+      oneLiner:
+        "Products I've built, tested, and sold alongside school, and what the numbers taught me.",
+      description:
+        "Products built, tested, and sold alongside school — from dirty soda recipe decks (Kazzi Soda) to secondhand Japanese imports and collectibles (Tokyo Treasures).",
+      problem:
+        "Testing real consumer demand, finding pricing inefficiencies, and building customer trust across physical products and e-commerce channels.",
+      whatIBuilt:
+        "Two physical product businesses: Kazzi Soda (recipe deck manufactured and marketed through 52 short-form videos) and Tokyo Treasures (multi-category reselling operation generating $9,600+ across 119 orders).",
+      role: "Founder, Product Designer & Operator",
+      client: "Independent Ventures",
+      date: "2020 – Present",
+      metrics: [
+        "$9,600+ Tokyo Treasures Sales",
+        "170K+ Kazzi Soda Views",
+        "100% Positive Feedback (119 Orders)",
+      ],
+      techStack: ["E-Commerce", "Shopify", "eBay", "TikTok Creator Suite", "Sourcing"],
+      url: "https://homesodabar.com",
+      secondaryLinks: [
+        { label: "TikTok", url: "https://www.tiktok.com/@kazzisoda" },
+      ],
+      image: "/projects/side-projects/card.jpg",
+      tags: ["Side Projects", "E-Commerce", "Physical Products", "Sourcing"],
+      background: "#fbfbf9",
+      accent: "#1f5cd6",
+    },
+    {
       slug: "bookends",
       name: "Bookends",
       featured: false,
@@ -521,15 +762,15 @@ export const site: SiteContent = {
       client: "Bookends",
       date: "2025",
       metrics: [
-        "AI Voice Processing",
+        "AI Assisted Journaling",
         "Automated Life Audit",
         "Daily Narrative Generation",
       ],
-      techStack: ["Next.js", "React Native", "AI Voice LLM", "Tailwind CSS"],
+      techStack: ["Next.js", "React Native", "AI Assisted Journaling", "Tailwind CSS"],
       url: "https://genfm.app",
       image: "/projects/bookends.png",
       imageFit: "contain",
-      tags: ["AI Voice", "Mobile & Web", "Personal Analytics"],
+      tags: ["AI Assisted Journaling", "Mobile & Web", "Personal Analytics"],
       background: "#f8f7f2",
       accent: "#2e5a47",
     },
@@ -555,36 +796,6 @@ export const site: SiteContent = {
       tags: ["Game Dev", "AI Prompting", "Multiplayer"],
       background: "#e2eee6",
       accent: "#3f6b53",
-    },
-    {
-      slug: "kazzi-soda",
-      name: "Kazzi Soda",
-      featured: false,
-      oneLiner:
-        "Dirty soda recipe card decks paired with an organic social video marketing strategy.",
-      description:
-        "Dirty soda recipe card decks. Built the landing page at homesodabar.com and led the social video strategy, shooting and editing every video for TikTok.",
-      problem:
-        "Beverage enthusiasts want popular dirty soda recipes at home, but lack curated physical recipe guides and engaging video tutorials.",
-      whatIBuilt:
-        "A physical dirty soda recipe card deck, e-commerce landing page, and an organic TikTok content campaign.",
-      role: "Product Creator & Content Director (Shot and edited every promotional video, managed physical production, and built the storefront).",
-      client: "Kazzi Soda",
-      date: "2024",
-      metrics: [
-        "100% Shot & Edited Videos",
-        "170K+ Organic TikTok Views",
-        "D2C Storefront Launched",
-      ],
-      techStack: ["Shopify", "Final Cut Pro / Premiere", "TikTok Creator Suite"],
-      url: "https://homesodabar.com",
-      secondaryLinks: [
-        { label: "TikTok", url: "https://www.tiktok.com/@kazzisoda" },
-      ],
-      image: "/projects/kazzi-soda.jpg",
-      tags: ["Consumer Product", "Content Strategy", "E-Commerce", "Video Production"],
-      background: "#feeef0",
-      accent: "#e31837",
     },
   ],
 
@@ -622,11 +833,12 @@ export const site: SiteContent = {
             },
           ],
           media: {
-            caption: "Turning a Quizlet set into a listenable review podcast.",
-            placeholderLabel: "[VIDEO PLACEHOLDER]",
+            src: "/projects/junbi/junbi-photo-1.png",
+            caption: "Junbi turning notes and study material into audio lessons.",
+            placeholderLabel: "[IMAGE PLACEHOLDER]",
             placeholderNote:
-              "Screen recording: paste a Quizlet set and get a generated podcast episode back.",
-            aspectRatio: "16 / 9",
+              "Junbi mobile interface showing audio study podcasts generated from course material.",
+            aspectRatio: "1080 / 1350",
           },
         },
         {
@@ -641,14 +853,6 @@ export const site: SiteContent = {
               ],
             },
           ],
-          media: {
-            caption:
-              "Before and after: the signup flow, with the generic path replaced by class-specific podcasts.",
-            placeholderLabel: "[VIDEO PLACEHOLDER]",
-            placeholderNote:
-              "Screen recording or side-by-side: the old flow next to the new class-specific flow.",
-            aspectRatio: "16 / 9",
-          },
         },
         {
           number: "03",
@@ -662,11 +866,14 @@ export const site: SiteContent = {
             },
           ],
           media: {
-            caption: "A walkthrough of the rebuilt UI, next to the version it replaced.",
+            src: "/projects/junbi/junbi-video.mp4",
+            poster: "/projects/junbi/junbi-video-poster.jpg",
+            caption: "A walkthrough of the rebuilt UI, before and after redesigning the discovery experience.",
+            size: "compact",
             placeholderLabel: "[VIDEO PLACEHOLDER]",
             placeholderNote:
-              "Screen recording: UI walkthrough, ideally a before/after comparison.",
-            aspectRatio: "16 / 9",
+              "Screen recording: UI walkthrough showing the redesigned Junbi interface.",
+            aspectRatio: "848 / 464",
           },
         },
         {
@@ -717,6 +924,91 @@ export const site: SiteContent = {
             "Low signups are data, not failure. The quiet launch was the most honest feedback I got, because it arrived before I knew how to ask for it.",
             "Solo doesn't mean alone. Bringing in someone who owned distribution changed what I could build, because I stopped trying to do everything myself.",
           ],
+        },
+      ],
+      closing: caseStudyClosing,
+    },
+    {
+      slug: "side-projects",
+      eyebrow: "Case Study",
+      tagline:
+        "Products I've built, tested, and sold alongside school, and what the numbers taught me.",
+      aboutTitle: "About the projects",
+      about: [
+        "Products I've built, tested, and sold alongside school, and what the numbers taught me.",
+      ],
+      meta: [
+        {
+          label: "Role",
+          value: "Entrepreneurship · Product Design · Sourcing · Operations",
+        },
+        { label: "Type", value: "Consumer Products · E-commerce · Reselling" },
+      ],
+      liveLabel: "Visit homesodabar.com ↗",
+      sections: [
+        {
+          number: "01",
+          title: "Identify the opportunity",
+          blocks: [
+            {
+              heading: "Bring cocktail culture to dirty soda",
+              body: [
+                "I saw an opportunity to make dirty soda recipes more accessible through a physical product. Inspired by cocktail recipe decks, I designed a collection of cards that made discovering and recreating drink combinations simple and fun.",
+              ],
+            },
+          ],
+          media: {
+            src: "/projects/side-projects/kazziSoda2.jpg",
+            caption: "The Kazzi Soda physical recipe deck fanned out.",
+            size: "compact",
+            placeholderLabel: "[IMAGE PLACEHOLDER]",
+            placeholderNote: "Finished recipe deck photo.",
+            aspectRatio: "2390 / 1792",
+          },
+        },
+        {
+          number: "02",
+          title: "Take the product to market",
+          blocks: [
+            {
+              heading: "Design, sourcing, and unit economics",
+              body: [
+                "I designed the complete recipe deck and sourced manufacturers for both the cards and their holders. Finding the right supplier meant comparing pricing, production options, and minimum order quantities.",
+                "I ultimately found a manufacturer willing to produce an initial run of just 50 units. I calculated unit economics across manufacturing, shipping, packaging, and selling price to understand the costs and viability of the product.",
+                "The finished product launched at approximately $25 per deck, available through Etsy and my own website.",
+              ],
+            },
+          ],
+          media: {
+            src: "/projects/side-projects/kazziSoda1.png",
+            caption:
+              "Analytics across the Kazzi Soda organic marketing campaign.",
+            size: "compact",
+            placeholderLabel: "[IMAGE PLACEHOLDER]",
+            placeholderNote:
+              "Analytics across TikTok and YouTube video campaign.",
+            aspectRatio: "1714 / 1122",
+          },
+        },
+        {
+          number: "03",
+          title: "Tokyo Treasures",
+          blocks: [
+            {
+              heading: "Finding underpriced products and expanding categories",
+              body: [
+                "I started Tokyo Treasures in high school during COVID. I had nothing but free time and wanted to make the most of it and earn money, so I looked for products I could buy for less than they were worth and resell. Over the next few years it grew from a single idea into three product lines, with more than $9,600 in total sales.",
+              ],
+            },
+          ],
+          media: {
+            src: "/projects/side-projects/tokyoTreasuresPhoto.png",
+            caption: "Tokyo Treasures storefront and sales record on eBay.",
+            size: "compact",
+            placeholderLabel: "[IMAGE PLACEHOLDER]",
+            placeholderNote: "Tokyo Treasures eBay storefront.",
+            aspectRatio: "2612 / 590",
+          },
         },
       ],
       closing: caseStudyClosing,
@@ -836,122 +1128,6 @@ export const site: SiteContent = {
       ],
       closing: caseStudyClosing,
     },
-    {
-      slug: "kazzi-soda",
-      eyebrow: "Case Study",
-      tagline: "Turning a growing drink trend into a physical product",
-      aboutTitle: "About the project",
-      about: [
-        "I noticed that cocktail enthusiasts had recipe cards, but dirty soda lovers didn't. Seeing an opportunity to bring the same concept to a growing drink category, I designed Kazzi Soda: a physical deck of dirty soda recipes made for experimenting with flavors at home.",
-        "I took the idea from concept to production, sourced manufacturers, calculated unit economics, and built an organic content strategy to introduce the product to customers.",
-      ],
-      meta: [
-        {
-          label: "Role",
-          value: "Entrepreneurship · Product Design · Sourcing · Marketing",
-        },
-        { label: "Type", value: "Consumer Product · E-commerce" },
-      ],
-      liveLabel: "Visit homesodabar.com ↗",
-      sections: [
-        {
-          number: "01",
-          title: "Identify the opportunity",
-          blocks: [
-            {
-              heading: "Bring cocktail culture to dirty soda",
-              body: [
-                "I saw an opportunity to make dirty soda recipes more accessible through a physical product. Inspired by cocktail recipe decks, I designed a collection of cards that made discovering and recreating drink combinations simple and fun.",
-              ],
-            },
-          ],
-          media: {
-            src: "/projects/kazzi/logo.png",
-            caption: "The Kazzi Soda brand mark designed for the recipe deck.",
-            size: "compact",
-            placeholderLabel: "[IMAGE PLACEHOLDER]",
-            placeholderNote: "Screenshot: the Kazzi Soda logo and brand identity.",
-            aspectRatio: "1200 / 640",
-          },
-        },
-        {
-          number: "02",
-          title: "Take the product to market",
-          blocks: [
-            {
-              heading: "Design, sourcing, and unit economics",
-              body: [
-                "I designed the complete recipe deck and sourced manufacturers for both the cards and their holders. Finding the right supplier meant comparing pricing, production options, and minimum order quantities.",
-                "I ultimately found a manufacturer willing to produce an initial run of just 50 units. I calculated unit economics across manufacturing, shipping, packaging, and selling price to understand the costs and viability of the product.",
-                "The finished product launched at approximately $25 per deck, available through Etsy and my own website.",
-              ],
-            },
-          ],
-          media: {
-            src: "/projects/kazzi/product-photo.jpg",
-            caption: "A product photo of the Kazzi Soda recipe deck.",
-            size: "compact",
-            placeholderLabel: "[IMAGE PLACEHOLDER]",
-            placeholderNote:
-              "Photo: the finished recipe deck and its holders.",
-            aspectRatio: "1600 / 1199",
-          },
-        },
-        {
-          number: "03",
-          title: "Experiment with organic marketing",
-          blocks: [
-            {
-              heading: "52 videos, one distribution strategy",
-              body: [
-                "I created 52 short-form videos demonstrating recipes from the deck, filming and publishing content across TikTok and YouTube.",
-                "Rather than relying on a single format, I experimented with hooks, on-screen text, background music, and video styles. I found that strong opening hooks and seamless loops tended to perform better, while energy-drink-related content often attracted more views on TikTok.",
-              ],
-            },
-            {
-              heading: "From attention to sales",
-              body: [
-                "The videos generated more than 170,000 views across TikTok and YouTube. Combined with Etsy and website sales, the initial launch generated five sales from the first 50-unit production run.",
-                "Although views haven't translated into consistent sales yet, the experiment gave me firsthand experience testing content, identifying engagement patterns, and evaluating the gap between attention and purchase intent.",
-              ],
-            },
-          ],
-          media: {
-            src: "/projects/kazzi/analytics-1.png",
-            caption: "Audience analytics for the Kazzi Soda video campaign.",
-            size: "compact",
-            placeholderLabel: "[IMAGE PLACEHOLDER]",
-            placeholderNote:
-              "Screenshot: TikTok analytics across the 52-video campaign.",
-            aspectRatio: "1600 / 1047",
-          },
-        },
-        {
-          number: "04",
-          title: "Learn through iteration",
-          blocks: [
-            {
-              heading: "Understanding the gap between views and revenue",
-              body: [
-                "Kazzi Soda is still available for purchase, and the business remains a work in progress.",
-                "Building Kazzi Soda taught me how to evaluate a product opportunity, manage manufacturing trade-offs, calculate unit economics, and test marketing strategies with real customers.",
-                "The next challenge is improving conversion: turning content engagement into purchases and finding a repeatable way to grow the business.",
-              ],
-            },
-          ],
-          media: {
-            src: "/projects/kazzi/analytics-2.png",
-            caption: "Reach and views analytics across the Kazzi Soda content.",
-            size: "compact",
-            placeholderLabel: "[IMAGE PLACEHOLDER]",
-            placeholderNote:
-              "Screenshot: reach and views across TikTok and YouTube.",
-            aspectRatio: "1600 / 1053",
-          },
-        },
-      ],
-      closing: caseStudyClosing,
-    },
   ],
 
   experience: [
@@ -997,97 +1173,74 @@ export const site: SiteContent = {
     {
       src: "/photography/salt-lake-city-utah.jpg",
       alt: "Salt Lake City downtown skyline against the Wasatch Mountains",
-      caption: "Salt Lake City, Utah — Skyline view framing the Wasatch mountain backdrop.",
     },
     {
       src: "/photography/provo-utah.jpg",
       alt: "Provo, Utah golden hour cityscape",
-      caption: "Provo, Utah — Golden hour reflections over Utah Valley.",
-    },
-    {
-      src: "/photography/provo-utah-2.jpg",
-      alt: "Provo valley at twilight",
-      caption: "Provo, Utah — Twilight mood across the city.",
     },
     {
       src: "/photography/provo-utah-3.jpg",
       alt: "Provo mountain peaks at sunset",
-      caption: "Provo, Utah — Sunset light over mountain peaks.",
     },
     {
       src: "/photography/provo-canyon-utah.jpg",
       alt: "Provo Canyon autumn foliage",
-      caption: "Provo Canyon, Utah — Autumn foliage along the canyon floor.",
     },
     {
       src: "/photography/byu-campus.jpg",
       alt: "BYU Campus grounds in Provo",
-      caption: "BYU Campus, Provo — Campus grounds during late afternoon light.",
     },
     {
       src: "/photography/sundance-utah.jpg",
       alt: "Sundance mountain resort scenery",
-      caption: "Sundance, Utah — Mountain scenery in alpine forest.",
     },
     {
       src: "/photography/draper-utah.jpg",
       alt: "Draper vista over Salt Lake Valley",
-      caption: "Draper, Utah — Panoramic vista overlooking Salt Lake Valley.",
     },
     {
       src: "/photography/american-fork-utah.jpg",
       alt: "American Fork mountain pass",
-      caption: "American Fork, Utah — Mountain pass and natural landscapes.",
     },
     {
       src: "/photography/bergen-norway.jpg",
       alt: "Bergen historic waterfront architecture",
-      caption: "Bergen, Norway — Coastal waterfront and colorful historic architecture.",
     },
     {
       src: "/photography/fjords-norway.jpg",
       alt: "Norwegian fjord landscape with steep cliffs",
-      caption: "Fjords, Norway — Dramatic glacier fjord waters and mountain cliffs.",
     },
     {
       src: "/photography/fjords-norway-2.jpg",
       alt: "Misty mountain valleys in Norwegian fjords",
-      caption: "Fjords, Norway — Fog and deep green valleys along Norwegian fjords.",
     },
     {
       src: "/photography/iceland.jpg",
       alt: "Icelandic volcanic landscape",
-      caption: "Iceland — Volcanic landscapes and natural black sand terrain.",
     },
     {
       src: "/photography/iceland-2.jpg",
       alt: "Icelandic waterfall and horizon",
-      caption: "Iceland — Glacial waterfalls and open horizon.",
     },
     {
       src: "/photography/osaka-japan.jpg",
       alt: "Osaka vibrant street life",
-      caption: "Osaka, Japan — Urban street scenes and vibrant culture.",
     },
     {
       src: "/photography/osaka-japan-2.jpg",
       alt: "Osaka neon night lights in Dotonbori",
-      caption: "Osaka, Japan — Night lights and architectural angles in Dotonbori.",
     },
     {
       src: "/photography/egypt.jpg",
       alt: "Egyptian desert and ancient monuments",
-      caption: "Egypt — Historic monuments and desert horizons.",
     },
     {
       src: "/photography/egypt-2.jpg",
       alt: "Ancient Egyptian temple stone carvings",
-      caption: "Egypt — Ancient temple architecture and timeless stone carvings.",
     },
     {
       src: "/photography/jordan.jpg",
       alt: "Petra Jordan sandstone canyon vista",
-      caption: "Jordan — Sandstone canyons and ancient desert vistas of Petra.",
     },
   ],
 
@@ -1095,26 +1248,22 @@ export const site: SiteContent = {
     {
       title: "Wheatley Institute Feature Production 1",
       youtubeId: "fKAnp7L7uqI",
-      description: "Edited and produced for the Wheatley Institute research channel.",
       category: "Documentary & Academic",
     },
     {
       title: "Wheatley Institute Feature Production 2",
       youtubeId: "FhDnQcuPK7Q",
-      description: "Higher education research highlight and commentary feature.",
       category: "Documentary & Academic",
     },
     {
       title: "Wheatley Institute Feature Production 3",
       youtubeId: "8C2mmAkzrWo",
-      description: "Produced and edited narrative short for academic outreach.",
       category: "Documentary & Academic",
     },
     {
-      title: "Wheatley Institute Feature Production 4",
+      title: "Fun video I made about an apple because I was bored.",
       youtubeId: "VbL6OZFTNAw",
-      description: "Event highlights and scholar interview production.",
-      category: "Documentary & Academic",
+      category: "For Fun",
     },
   ],
 

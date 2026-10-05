@@ -14,7 +14,21 @@ const nextConfig: NextConfig = {
         pathname: "/**",
       },
     ],
-  }
+  },
+  async redirects() {
+    return [
+      {
+        source: "/projects/kazzi-soda",
+        destination: "/projects/side-projects",
+        permanent: true,
+      },
+      {
+        source: "/work/kazzi-soda",
+        destination: "/projects/side-projects",
+        permanent: true,
+      },
+    ];
+  },
 
   
 };

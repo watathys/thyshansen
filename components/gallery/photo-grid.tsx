@@ -84,12 +84,9 @@ function PhotoTile({
       </div>
 
       {/* Caption Bar */}
-      {photo.caption || photo.alt ? (
+      {photo.caption ? (
         <div className="p-3.5">
-          <p className="text-xs font-semibold text-foreground">{photo.alt}</p>
-          {photo.caption ? (
-            <p className="mt-0.5 text-xs text-muted">{photo.caption}</p>
-          ) : null}
+          <p className="text-xs text-muted">{photo.caption}</p>
         </div>
       ) : null}
     </div>
