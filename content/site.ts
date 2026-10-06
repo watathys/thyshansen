@@ -836,7 +836,7 @@ export const site: SiteContent = {
       meta: [
         { label: "Role", value: "Solo Founder & Builder" },
         { label: "Built at", value: "BYU Sandbox startup incubator" },
-        { label: "Dates", value: "[INSERT DATE RANGE]" },
+        { label: "Dates", value: "January 2026 - Present" },
       ],
       liveLabel: "Visit junbi.study ↗",
       sections: [
@@ -866,9 +866,9 @@ export const site: SiteContent = {
           blocks: [
             {
               body: [
-                "I launched, told everyone I knew, and watched signups trickle in and back out again. It was quiet — quieter than I expected after months of building.",
-                "The lesson wasn't that people didn't want it. I had built for my own friction point and assumed everyone else shared it. Generic study content wasn't the ask.",
-                "So I cut steps out of the flow and changed what Junbi generated: class-specific podcasts built from the student's own material, in their words, for their exam. That reframing is what finally started working.",
+                "I launched, put up fliers, and watched signups trickle in and back out again.",
+                "I had failed. The question was, did I fail because no one wanted study podcasts, or was I just not marketing it correctly?",
+                "So I cut steps out of the flow and changed a lot: I made everything free. I made class-specific podcasts built from the student's own material, in their words, for their exam. I then targetted specific general classes, and put up fliers in those classes advertising podcasts for that class. That reframing is what finally started working.",
               ],
             },
           ],
@@ -922,7 +922,7 @@ export const site: SiteContent = {
             {
               body: [
                 "Later in the build I got the chance to pitch Junbi directly to Quizlet's CFO — the company whose sets were already the front door to most of my users' study material.",
-                "I brought the product, the numbers, and a specific idea for where Junbi fit alongside what Quizlet already did. Whatever comes of it, that conversation changed how I think about building next to a giant instead of against one.",
+                "I brought the product, the numbers, and a specific idea for where Junbi fit alongside what Quizlet already did. The pitch went well but Quizlet said they were busy with other projects. Then a few months later they came out with their own podcast feature. Imitation is the sincerest form of flattery, I guess.",
               ],
             },
           ],
