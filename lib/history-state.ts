@@ -38,13 +38,14 @@ export function slugFromCaseStudyPath(pathname: string): string | null {
 /**
  * True when `pathname` points at an overlay-supported route: either a project
  * case study (/work/:slug, /projects/:slug) or an editorial teaser card
- * (/gallery for Creatives, /resume for Work Experience).
+ * (/gallery for Creatives, /resume for Work Experience, /about for About / Thys Hansen).
  */
 export function isOverlayPath(pathname: string): boolean {
   return (
     isCaseStudyPath(pathname) ||
     pathname === "/gallery" ||
-    pathname === "/resume"
+    pathname === "/resume" ||
+    pathname === "/about"
   );
 }
 
@@ -54,6 +55,7 @@ export function isOverlayPath(pathname: string): boolean {
 export function slugFromOverlayPath(pathname: string): string | null {
   if (pathname === "/gallery") return "creatives";
   if (pathname === "/resume") return "work-experience";
+  if (pathname === "/about") return "intro";
   return slugFromCaseStudyPath(pathname);
 }
 

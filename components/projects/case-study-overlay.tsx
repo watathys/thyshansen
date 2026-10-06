@@ -14,6 +14,7 @@ import { CaseStudyClosing } from "@/components/case-study/case-study-closing";
 import { CreativesOverlayBody } from "@/components/projects/creatives-overlay-body";
 import { ExperienceOverlayBody } from "@/components/projects/experience-overlay-body";
 import { SideProjectsBody } from "@/components/projects/side-projects-body";
+import { AboutOverlayBody } from "@/components/projects/about-overlay-body";
 import { caseStudyTheme, nextCaseStudy } from "@/lib/projects";
 import { imageFitClass, initials } from "@/lib/media";
 import { cn } from "@/lib/utils";
@@ -121,7 +122,10 @@ export function CaseStudyOverlay({
     : undefined;
   const cinematic = Boolean(study && slide.caseStudyMedia && project);
   const theme = project ? caseStudyTheme(project) : null;
-  const isDarkBody = slide.slug === "creatives" || slide.slug === "work-experience";
+  const isDarkBody =
+    slide.slug === "creatives" ||
+    slide.slug === "work-experience" ||
+    slide.slug === "intro";
   const bodyColor = cinematic && theme
     ? theme.background
     : isDarkBody
@@ -354,6 +358,8 @@ export function CaseStudyOverlay({
             <CreativesOverlayBody slide={slide} />
           ) : slide.slug === "work-experience" ? (
             <ExperienceOverlayBody slide={slide} />
+          ) : slide.slug === "intro" ? (
+            <AboutOverlayBody slide={slide} />
           ) : project ? (
             <div className="bg-white text-zinc-900">
               <Container className="py-20 sm:py-28">

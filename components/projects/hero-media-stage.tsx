@@ -89,8 +89,8 @@ function HeroMediaCard({
   const springX = useSpring(rotateX, PARALLAX_SPRING);
   const springY = useSpring(rotateY, PARALLAX_SPRING);
 
-  // Project slides and featured teasers (Creatives / Work Experience)
-  // open the transition overlay; others navigate to their target.
+  // Project slides, intro (Thys Hansen), and featured teasers (Creatives /
+  // Work Experience) open the transition overlay; others navigate to their target.
   const hasOverlay = isOverlayPath(slide.href);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {

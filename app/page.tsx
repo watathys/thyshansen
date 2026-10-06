@@ -79,7 +79,8 @@ export default function Home() {
     href: site.heroContact.href,
     ctaLabel: site.heroContact.ctaLabel,
     links: site.heroContact.links,
-    hasImage: false,
+    image: site.heroContact.image,
+    hasImage: publicFileExists(site.heroContact.image),
     background: site.heroContact.background,
     accent: site.heroContact.accent,
   };

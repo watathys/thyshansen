@@ -166,9 +166,9 @@ export function HeroSlider({ slides }: { slides: HeroSlideData[] }) {
     [openCaseStudy],
   );
 
-  // A media card in the right column. Project cards open the shared-element
-  // overlay; info cards (intro / Creatives / Experience) simply navigate.
-  // External targets (e.g. the Contact card's `mailto:`) bypass the router.
+  // A media card in the right column. Project slides, intro, and teaser
+  // cards open the shared-element overlay; external targets (e.g. the
+  // Contact card's `mailto:`) bypass the router.
   const handleCardClick = useCallback(
     (slide: HeroSlideData) => {
       if (openCaseStudy(slide)) return;

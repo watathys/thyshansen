@@ -79,6 +79,12 @@ export interface HeroInfoCard {
    * present, these replace the single `ctaLabel` button.
    */
   links?: ProjectLink[];
+  /**
+   * Optional path relative to /public for this card's media-stage image
+   * (e.g. the Contact card's photo). Falls back to a monogram card when
+   * unset or missing from /public.
+   */
+  image?: string;
 }
 
 /**
@@ -426,7 +432,7 @@ export const site: SiteContent = {
   intro:
     "I bridge strategic business thinking with technical execution to design, build, and scale products people love.",
   bio:
-    "I'm a Business Strategic Management student with a Product Management emphasis at BYU Marriott. I combine quantitative strategy, market research, and hands-on software development to take products from zero to one and drive measurable impact.",
+    "I'm a product builder first, business student second. Over the past year I took Junbi from a blank repo to 4,000+ active users across 50+ universities on a $30 budget — writing the go-to-market plan and the code that shipped it. I'm studying Business Strategic Management with a Product Management emphasis at BYU Marriott, but most of what I know came from doing: founding three bootstrapped e-commerce brands, leading regional volunteer training for 80+ peers in Sapporo, Japan, and running video production for events with a U.S. senator. I'm drawn to the seam between strategy and execution — the GTM plan and the ad campaign, the user interview and the pull request — and I'm looking for a product management role where I can keep working both sides at once.",
   headshot: "/headshot.jpg",
   resumeImage: "/work-experience.png",
   resumeUrl: "/resume.pdf",
@@ -485,6 +491,7 @@ export const site: SiteContent = {
     href: "mailto:watathys@gmail.com",
     background: "#e6eaf0",
     accent: "#3e4c6b",
+    image: "/contact.jpg",
     links: [
       { label: "Email", url: "mailto:watathys@gmail.com" },
       { label: "LinkedIn", url: "https://linkedin.com/in/thysh" },
@@ -666,7 +673,19 @@ export const site: SiteContent = {
     },
     { label: "Academics", value: "GPA 3.79 · Dean's List" },
     { label: "Graduation", value: "Class of 2028" },
-    { label: "Languages", value: "English + Japanese" },
+    {
+      label: "Languages",
+      value: "English + Japanese (2 years living in Sapporo, Japan)",
+    },
+    {
+      label: "Leadership",
+      value: "Eagle Scout · Selected from 80+ peers for regional leadership role",
+    },
+    {
+      label: "Beyond the resume",
+      value: "1st Team All-State XC · Utah Piano Competition winner",
+    },
+    { label: "Travel", value: "15+ countries, incl. Japan, Iceland, Egypt, Thailand" },
   ],
 
   stats: [
@@ -792,7 +811,7 @@ export const site: SiteContent = {
       metrics: ["2 Original AI Games", "Interactive LLM Judge", "Rapid Prototype"],
       techStack: ["Next.js", "TypeScript", "LLM APIs", "Tailwind CSS"],
       url: "",
-      image: "/projects/games.png",
+      image: "/projects/games.jpg",
       tags: ["Game Dev", "AI Prompting", "Multiplayer"],
       background: "#e2eee6",
       accent: "#3f6b53",
