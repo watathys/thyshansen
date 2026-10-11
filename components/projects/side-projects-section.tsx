@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { SideProjectsStep } from "@/components/projects/side-projects-step";
+import { cn } from "@/lib/utils";
 import type { SideProjectItem } from "@/content/site";
 
 interface SideProjectsSectionProps {
@@ -26,10 +27,12 @@ export function SideProjectsSection({
       </p>
 
       <div className="mt-8">
-        <h3 className="text-base font-bold text-zinc-900 sm:text-lg">
-          {project.aboutTitle}
-        </h3>
-        <div className="mt-3 space-y-4">
+        {project.aboutTitle ? (
+          <h3 className="text-base font-bold text-zinc-900 sm:text-lg">
+            {project.aboutTitle}
+          </h3>
+        ) : null}
+        <div className={cn("space-y-4", project.aboutTitle && "mt-3")}>
           {project.about.map((paragraph, index) => (
             <p
               key={index}
@@ -92,7 +95,7 @@ export function SideProjectsSection({
       <div className="mt-8 space-y-10">
         {project.steps.map((step) => (
           <SideProjectsStep
-            key={step.kicker}
+            key={step.title}
             step={step}
             accentText={accentText}
           />

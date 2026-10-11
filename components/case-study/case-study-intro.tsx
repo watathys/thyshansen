@@ -1,5 +1,6 @@
 import { Container } from "@/components/layout/container";
 import { ButtonLink } from "@/components/ui/button-link";
+import { cn } from "@/lib/utils";
 import type { CaseStudy } from "@/content/site";
 
 /**
@@ -19,32 +20,51 @@ export function CaseStudyIntro({
   study,
   accentText,
   liveUrl,
+  showTagline = true,
 }: {
   study: CaseStudy;
   /** AA-safe accent for the small tracked label. */
   accentText: string;
   /** Optional link to the live product. */
   liveUrl?: string;
+  /** Whether to render the tagline here (set to false if rendered in hero). */
+  showTagline?: boolean;
 }) {
+  const hasTagline = Boolean(showTagline && study.tagline);
+
   return (
     <Container>
-      <p className="max-w-2xl text-xl leading-snug text-zinc-600 sm:text-2xl">
-        {study.tagline}
-      </p>
+      {hasTagline ? (
+        <p className="max-w-2xl text-xl leading-snug text-zinc-600 sm:text-2xl">
+          {study.tagline}
+        </p>
+      ) : null}
 
-      <div className="mt-14 grid gap-12 lg:grid-cols-[1fr_240px] lg:gap-16">
+      <div
+        className={cn(
+          "grid gap-12 lg:grid-cols-[1fr_240px] lg:gap-16",
+          hasTagline && "mt-14",
+        )}
+      >
         <div className="max-w-2xl">
-          <h2
-            className="text-eyebrow text-xs font-bold"
-            style={{ color: accentText }}
-          >
-            {study.aboutTitle}
-          </h2>
-          <div className="mt-4 space-y-5">
+          {study.aboutTitle ? (
+            <h2
+              className="text-eyebrow text-xs font-bold"
+              style={{ color: accentText }}
+            >
+              {study.aboutTitle}
+            </h2>
+          ) : null}
+          <div className={cn("space-y-5", study.aboutTitle && "mt-4")}>
             {study.about.map((paragraph) => (
               <p
                 key={paragraph}
-                className="text-base leading-relaxed text-zinc-600 sm:text-lg"
+                className={cn(
+                  "text-zinc-600",
+                  study.aboutEmphasis
+                    ? "text-3xl leading-snug tracking-tight sm:text-4xl"
+                    : "text-base leading-relaxed sm:text-lg",
+                )}
               >
                 {paragraph}
               </p>

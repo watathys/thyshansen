@@ -76,12 +76,14 @@ function renderParagraph(content: SideProjectParagraphContent, accentText: strin
 export function SideProjectsStep({ step, accentText }: SideProjectsStepProps) {
   return (
     <div className="mt-9">
-      <div
-        className="text-eyebrow text-xs font-bold tracking-[0.2em]"
-        style={{ color: accentText }}
-      >
-        {step.kicker}
-      </div>
+      {step.kicker ? (
+        <div
+          className="text-eyebrow text-xs font-bold tracking-[0.2em]"
+          style={{ color: accentText }}
+        >
+          {step.kicker}
+        </div>
+      ) : null}
       <h3 className="mt-2 text-xl font-bold tracking-tight text-zinc-900 sm:text-2xl">
         {step.title}
       </h3>

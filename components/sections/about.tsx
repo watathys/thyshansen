@@ -12,7 +12,7 @@ export function About({
   showBackLink?: boolean;
   className?: string;
 } = {}) {
-  const { education } = site;
+  const { about, education } = site;
 
   return (
     <section id="about" className={cn("py-16 sm:py-24", className)}>
@@ -29,12 +29,19 @@ export function About({
           </div>
         ) : null}
 
-        {/* Section Heading & Bio */}
+        {/* Section Heading & Intro */}
         <div>
-          <SectionHeading eyebrow="About" title="Background & Strategy" />
-          <p className="mt-6 max-w-3xl text-lg leading-relaxed text-muted">
-            {site.bio}
-          </p>
+          <SectionHeading eyebrow="About" title={about.title} />
+          <div className="mt-6 max-w-3xl space-y-5">
+            {about.paragraphs.map((paragraph) => (
+              <p
+                key={paragraph}
+                className="text-lg leading-relaxed text-muted"
+              >
+                {paragraph}
+              </p>
+            ))}
+          </div>
         </div>
 
         {/* Headline Stat Strip */}
@@ -61,7 +68,7 @@ export function About({
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <span className="text-eyebrow font-sans text-xs font-bold text-accent">
-                Academic Background
+                {about.educationLabel}
               </span>
               <h3 className="mt-2 text-xl font-bold tracking-tight text-foreground sm:text-2xl">
                 {education.school}
@@ -80,26 +87,17 @@ export function About({
               href="/resume"
               className="text-eyebrow inline-flex items-center gap-1 text-xs font-semibold text-accent transition-colors hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent self-start sm:self-auto"
             >
-              View Resume PDF →
+              {about.resumeLinkLabel} →
             </Link>
           </div>
 
           {education.honors.length > 0 ? (
-            <div className="mt-6 border-t border-border/60 pt-4">
-              <span className="text-xs font-semibold uppercase tracking-wider text-muted">
-                Honors & Organizations
-              </span>
-              <ul className="mt-2 flex flex-wrap gap-2 text-xs">
-                {education.honors.map((honor) => (
-                  <li
-                    key={honor}
-                    className="rounded-md border border-border bg-background px-3 py-1 font-medium text-foreground"
-                  >
-                    {honor}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <p className="mt-6 border-t border-border/60 pt-4 text-xs text-muted">
+              <span className="font-semibold uppercase tracking-wider text-muted">
+                {about.honorsLabel}:
+              </span>{" "}
+              {education.honors.join(" · ")}
+            </p>
           ) : null}
         </div>
 
@@ -107,7 +105,7 @@ export function About({
         {site.facts.length > 0 ? (
           <div className="rounded-2xl border border-border bg-background p-6 sm:p-8">
             <h3 className="text-eyebrow font-sans text-xs font-bold text-accent">
-              Quick Facts
+              {about.factsLabel}
             </h3>
             <dl className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {site.facts.map((fact) => (
@@ -127,10 +125,10 @@ export function About({
         {/* Action CTAs */}
         <div className="flex flex-wrap items-center gap-4 pt-4">
           <ButtonLink href="/resume" variant="primary">
-            View Resume & Experience
+            {about.resumeCtaLabel}
           </ButtonLink>
           <ButtonLink href={`mailto:${site.email}`} variant="secondary">
-            Get in Touch
+            {about.contactCtaLabel}
           </ButtonLink>
         </div>
       </Container>

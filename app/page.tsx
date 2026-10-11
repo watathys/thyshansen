@@ -11,6 +11,7 @@ export default function Home() {
     slug: "intro",
     eyebrow: site.heroIntro.eyebrow,
     title: site.name,
+    subtitle: site.about.subheading,
     description: site.heroIntro.description,
     href: site.heroIntro.href,
     ctaLabel: site.heroIntro.ctaLabel,

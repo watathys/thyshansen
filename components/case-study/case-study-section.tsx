@@ -37,30 +37,32 @@ export function CaseStudySection({
             {title}
           </h2>
 
-          <div className="mt-6 space-y-10">
-            {blocks.map((block) => (
-              <div
-                key={block.heading ?? block.body[0]}
-                className="space-y-4"
-              >
-                {block.heading ? (
-                  <h3 className="text-lg font-semibold tracking-tight text-zinc-900 sm:text-xl">
-                    {block.heading}
-                  </h3>
-                ) : null}
-                <div className="space-y-5">
-                  {block.body.map((paragraph) => (
-                    <p
-                      key={paragraph}
-                      className="text-base leading-relaxed text-zinc-600 sm:text-lg"
-                    >
-                      {paragraph}
-                    </p>
-                  ))}
+          {blocks.length > 0 ? (
+            <div className="mt-6 space-y-10">
+              {blocks.map((block) => (
+                <div
+                  key={block.heading ?? block.body[0]}
+                  className="space-y-4"
+                >
+                  {block.heading ? (
+                    <h3 className="text-lg font-semibold tracking-tight text-zinc-900 sm:text-xl">
+                      {block.heading}
+                    </h3>
+                  ) : null}
+                  <div className="space-y-5">
+                    {block.body.map((paragraph) => (
+                      <p
+                        key={paragraph}
+                        className="text-base leading-relaxed text-zinc-600 sm:text-lg"
+                      >
+                        {paragraph}
+                      </p>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : null}
         </div>
       </Container>
       {children}

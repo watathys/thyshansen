@@ -39,6 +39,33 @@ export interface Education {
   honors: string[];
 }
 
+/**
+ * The "Thys Hansen" intro/about content — the subheading under the name in the
+ * hero overlay plus the first-person intro, academic background, and quick
+ * facts shown when the intro card is opened (and on `/about`). Metrics and
+ * facts themselves live in `site.stats` / `site.facts` / `site.education`.
+ */
+export interface AboutContent {
+  /** One-line subheading under the name in the hero overlay. */
+  subheading: string;
+  /** Heading above the first-person intro, e.g. "About me". */
+  title: string;
+  /** First-person intro paragraphs, in order. */
+  paragraphs: string[];
+  /** Small tracked label above the academic background card. */
+  educationLabel: string;
+  /** Label preceding the inline honors list, e.g. "Honors & organizations". */
+  honorsLabel: string;
+  /** Label for the link to the resume, e.g. "View resume PDF". */
+  resumeLinkLabel: string;
+  /** Small tracked label above the quick-facts list. */
+  factsLabel: string;
+  /** Primary CTA at the foot of the content. */
+  resumeCtaLabel: string;
+  /** Secondary CTA at the foot of the content. */
+  contactCtaLabel: string;
+}
+
 export interface ProjectLink {
   label: string;
   url: string;
@@ -293,6 +320,11 @@ export interface CaseStudy {
   aboutTitle: string;
   /** First-person paragraphs on why the product exists. */
   about: string[];
+  /**
+   * Renders the `about` paragraphs at case-study section-heading size (a
+   * statement-style intro) instead of body copy. Defaults to body copy.
+   */
+  aboutEmphasis?: boolean;
   /** Hero metadata row (Role / Built at / Dates). */
   meta: Fact[];
   /** Label for the hero's link to the live product, if any. */
@@ -322,7 +354,8 @@ export interface SideProjectParagraph {
 export type SideProjectParagraphContent = string | SideProjectParagraph;
 
 export interface SideProjectStep {
-  kicker: string;
+  /** Small tracked label above the title. Optional — omitted steps show the title alone. */
+  kicker?: string;
   title: string;
   body: SideProjectParagraphContent[];
   photo?: SideProjectPhoto;
@@ -334,7 +367,8 @@ export interface SideProjectItem {
   id: string;
   name: string;
   tagline: string;
-  aboutTitle: string;
+  /** Heading above the intro paragraphs. Optional — omitted projects lead with the paragraphs. */
+  aboutTitle?: string;
   about: string[];
   meta: Fact[];
   visitLink?: {
@@ -359,6 +393,8 @@ export interface SiteContent {
   tagline: string;
   intro: string;
   bio: string;
+  /** Copy for the "Thys Hansen" intro card's overlay and the `/about` page. */
+  about: AboutContent;
   headshot: string;
   resumeUrl: string;
   /**
@@ -416,14 +452,21 @@ export interface SiteContent {
  */
 const caseStudyClosing: CaseStudyClosing = {
   eyebrow: "Next",
-  title: "Let's work together.",
-  body: "I'm looking for product management internships and full-time roles where I can build close to users and ship fast. If that's the kind of work you're hiring for, I'd love to talk.",
+  title: "Let’s work together",
+  body: "I’m looking for product management internships and full-time roles where I can work close to users, make thoughtful product decisions, and ship quickly. If that sounds useful to your team, I’d love to talk.",
   links: [
     { label: "Email me", url: "mailto:watathys@gmail.com" },
     { label: "LinkedIn", url: "https://linkedin.com/in/thysh" },
   ],
   archiveLabel: "All projects",
   archiveHref: "/",
+};
+
+/** The Side Projects closing — same shape as the shared one, tuned copy. */
+const sideProjectsClosing: CaseStudyClosing = {
+  ...caseStudyClosing,
+  body: "I’m looking for product management internships and full-time roles where I can work close to users, make thoughtful product decisions, and ship quickly. If that’s what your team needs, I’d love to talk.",
+  links: [{ label: "Email me", url: "mailto:watathys@gmail.com" }],
 };
 
 export const site: SiteContent = {
@@ -433,6 +476,20 @@ export const site: SiteContent = {
     "I bridge strategic business thinking with technical execution to design, build, and scale products people love.",
   bio:
     "I'm a product builder first, business student second. Over the past year I took Junbi from a blank repo to 4,000+ active users across 50+ universities on a $30 budget — writing the go-to-market plan and the code that shipped it. I'm studying Business Strategic Management with a Product Management emphasis at BYU Marriott, but most of what I know came from doing: founding three bootstrapped e-commerce brands, leading regional volunteer training for 80+ peers in Sapporo, Japan, and running video production for events with a U.S. senator. I'm drawn to the seam between strategy and execution — the GTM plan and the ad campaign, the user interview and the pull request — and I'm looking for a product management role where I can keep working both sides at once.",
+  about: {
+    subheading: "Product builder at the intersection of strategy and execution.",
+    title: "About me",
+    paragraphs: [
+      "I build products from the first user problem through launch and iteration. At BYU, I took Junbi from a blank repo to 4,400+ active users across 100+ universities, while building the product and testing a go-to-market strategy on a $30 marketing budget.",
+      "I’m studying Business Strategic Management with a Product Management emphasis at BYU Marriott. Outside the classroom, I’ve built bootstrapped businesses, led regional volunteer training for 80+ peers in Japan, and run photography and videography production for events with U.S. senators. I’m looking for a product management role where I can connect customer needs, business strategy, and hands-on execution.",
+    ],
+    educationLabel: "Academic background",
+    honorsLabel: "Honors & organizations",
+    resumeLinkLabel: "View resume PDF",
+    factsLabel: "Quick facts",
+    resumeCtaLabel: "View Resume & Experience",
+    contactCtaLabel: "Get in Touch",
+  },
   headshot: "/headshot.jpg",
   resumeImage: "/work-experience.png",
   resumeUrl: "/resume.pdf",
@@ -502,25 +559,25 @@ export const site: SiteContent = {
     slug: "side-projects",
     eyebrow: "Side Projects",
     title: "Side projects",
-    lede: "Products I've built, tested, and sold alongside school, and what the numbers taught me.",
+    lede: "Turning ideas into products, and products into real experience.",
     projects: [
       {
         id: "kazzi-soda",
         name: "Kazzi Soda",
-        tagline: "Turning a growing drink trend into a physical product",
-        aboutTitle: "About the project",
+        tagline: "A dirty soda recipe deck, from idea to first sales.",
         about: [
-          "I noticed that cocktail enthusiasts had recipe cards, but dirty soda lovers didn't. Seeing an opportunity to bring the same concept to a growing drink category, I designed Kazzi Soda: a physical deck of dirty soda recipes made for experimenting with flavors at home.",
-          "I took the idea from concept to production, sourced manufacturers, calculated unit economics, and built an organic content strategy to introduce the product to customers.",
+          "I saw an opportunity to bring cocktail recipe cards to dirty soda because the popularity of dirty soda was exploding.",
+          "I designed the deck, sourced manufacturers, worked through production costs, and launched it on Etsy and my website.",
         ],
         meta: [
           {
             label: "Role",
-            value: "Entrepreneurship · Product Design · Sourcing · Marketing",
+            value:
+              "Entrepreneurship · Product design · Sourcing · Marketing",
           },
           {
             label: "Type",
-            value: "Consumer Product · E-commerce",
+            value: "Consumer product · E-commerce",
           },
         ],
         visitLink: {
@@ -535,27 +592,17 @@ export const site: SiteContent = {
         },
         steps: [
           {
-            kicker: "01 · Identify the opportunity",
-            title: "Bring cocktail culture to dirty soda",
+            title: "Building and pricing",
             body: [
-              "I saw an opportunity to make dirty soda recipes more accessible through a physical product. Inspired by cocktail recipe decks, I designed a collection of cards that made discovering and recreating drink combinations simple and fun.",
+              "I compared manufacturers, production, and minimum order quantities, then found a supplier to make an initial run of 50 decks.",
+              "I calculated costs across manufacturing, shipping, and packaging, and launched the deck for $25.",
             ],
           },
           {
-            kicker: "02 · Take the product to market",
-            title: "Design, sourcing, and unit economics",
+            title: "Marketing on $0",
             body: [
-              "I designed the complete recipe deck and sourced manufacturers for both the cards and their holders. Finding the right supplier meant comparing pricing, production options, and minimum order quantities.",
-              "I ultimately found a manufacturer willing to produce an initial run of just 50 units. I calculated unit economics across manufacturing, shipping, packaging, and selling price to understand the costs and viability of the product.",
-              "The finished product launched at approximately $25 per deck, available through Etsy and my own website.",
-            ],
-          },
-          {
-            kicker: "03 · Experiment with organic marketing",
-            title: "52 videos, one distribution strategy",
-            body: [
-              "I created 52 short-form videos demonstrating recipes from the deck, filming and publishing content across TikTok and YouTube.",
-              "Rather than relying on a single format, I experimented with hooks, on-screen text, background music, and video styles. I found that strong opening hooks and seamless loops tended to perform better, while energy-drink-related content often attracted more views on TikTok.",
+              "I made 52 short videos for TikTok and YouTube, testing hooks, text, music, and formats.",
+              "The videos reached 170,000+ views, and generated sales with 0 ad spend.",
             ],
             photo: {
               src: "/projects/side-projects/kazziSoda1.png",
@@ -563,25 +610,12 @@ export const site: SiteContent = {
               caption: "Kazzi Soda organic video reach and audience analytics",
               aspectRatio: "1714 / 1122",
             },
-            subheading: "From attention to sales",
-            subBody: [
-              {
-                text: "The videos generated more than 170,000 views across TikTok and YouTube. Combined with Etsy and website sales, the initial launch generated five sales from the first 50-unit production run.",
-                links: [
-                  { text: "TikTok", url: "https://www.tiktok.com/@kazzisoda" },
-                  { text: "YouTube", url: "https://www.youtube.com/@KazziSoda" },
-                ],
-              },
-              "Although views haven't translated into consistent sales yet, the experiment gave me firsthand experience testing content, identifying engagement patterns, and evaluating the gap between attention and purchase intent.",
-            ],
           },
           {
-            kicker: "04 · Learn through iteration",
-            title: "Understanding the gap between views and revenue",
+            title: "What I learned",
             body: [
-              "Kazzi Soda is still available for purchase, and the business remains a work in progress.",
-              "Building Kazzi Soda taught me how to evaluate a product opportunity, manage manufacturing trade-offs, calculate unit economics, and test marketing strategies with real customers.",
-              "The next challenge is improving conversion: turning content engagement into purchases and finding a repeatable way to grow the business.",
+              "Kazzi Soda gave me hands-on experience evaluating an idea, dealing with production trade offs, and testing marketing with real customers.",
+              "The next challenge is improving conversion and finding a repeatable way to grow sales.",
             ],
           },
         ],
@@ -590,24 +624,23 @@ export const site: SiteContent = {
         id: "tokyo-treasures",
         name: "Tokyo Treasures",
         tagline:
-          "Finding underpriced products, testing demand, and expanding into new categories since 2020",
-        aboutTitle: "About the project",
+          "Finding underpriced products, testing demand, and expanding into new categories",
         about: [
-          "I started Tokyo Treasures in high school during COVID. I had nothing but free time and wanted to make the most of it and earn money, so I looked for products I could buy for less than they were worth and resell. Over the next few years it grew from a single idea into three product lines, with more than $9,600 in total sales.",
+          "I started reselling during COVID by looking for products I could buy below market value.",
+          "Over time, I tested three product categories and generated $9,600+ in sales across 119 orders, with 100% positive reviews.",
         ],
         meta: [
           {
             label: "Role",
-            value: "Sourcing · Pricing · Product Selection · Operations",
+            value: "Sourcing · Pricing · Product selection · Operations",
           },
           {
             label: "Type",
-            value: "Reselling · E-commerce (eBay)",
+            value: "Reselling · E-commerce",
           },
           {
-            label: "Results",
-            value:
-              "$9,600+ in total sales · 119 orders · 113 buyers · 100% positive reviews",
+            label: "Platform",
+            value: "eBay",
           },
         ],
         photo: {
@@ -618,38 +651,37 @@ export const site: SiteContent = {
         },
         steps: [
           {
-            kicker: "Phase 1 · Find the gap",
-            title: "LEGO sets",
+            title: "Start with LEGO",
             body: [
-              "I saw an opportunity in buying and reselling LEGO sets. It was my first test of whether I could consistently find products priced below what buyers would pay. I sold 23 sets, averaging about $92 each.",
+              "I began by buying and reselling LEGO sets to test whether I could consistently find products buyers wanted. I sold 23 sets for an average of about $92 each.",
             ],
           },
           {
-            kicker: "Phase 2 · Add value to the product",
-            title: "Pokémon cards and PSA grading",
+            title: "Add value with Pokémon grading",
             body: [
-              "I expanded into Pokémon cards by buying underpriced ones, sending the best to PSA for grading, and selling them. I had researched the market and knew that highly graded cards can command much higher prices, and I checked my cards were in excellent condition before paying to grade them.",
-              "To price each card, I looked at what the same card had recently sold for and priced mine in line with those sales. The grading bet paid off: my 16 PSA-graded cards averaged about $126 per sale, compared with about $16 for ungraded cards. The top sale was a PSA 9 Charizard for $549.99.",
+              "With Pokémon cards trending I tried to capitalize on the trend.",
+              "I would buy undervalued Pokémon cards, then send them to PSA for grading.",
+              "My 16 graded cards averaged about $126 per sale, compared with about $16 for ungraded cards; my top sale was a PSA 9 Charizard for $549.99.",
             ],
           },
           {
-            kicker: "Phase 3 · Open a new supply channel",
-            title: "Buying in Japan, selling in the United States",
+            title: "Expand sourcing to Japan",
             body: [
-              "I then expanded to items I bought secondhand in Japan, looking for things that would sell for more in the United States than they cost in Japan. This phase was my busiest: 2024 was my highest-volume year, with 50 sales across Japanese video games, anime figures, collectibles, and more.",
+              "I began buying secondhand items in Japan to resell in the United States.",
+              "I sold video games, figures, and collectibles. In 2024, this became my busiest category, with 50 sales.",
             ],
           },
           {
-            kicker: "Takeaways",
             title: "What I learned",
             body: [
-              "Tokyo Treasures taught me to validate demand with real sales data before setting a price, to decide what to buy based on what has already worked, and to keep customers happy while the product mix changes. Each new category started with a small test, and I kept the ones that worked.",
+              "I learned to check completed sales before setting prices, use past results to guide what I buy, and keep customer experience consistent as the product mix changes.",
+              "I tested each new category on a small scale, then expanded when it brought in revenue.",
             ],
           },
         ],
       },
     ],
-    closing: caseStudyClosing,
+    closing: sideProjectsClosing,
   },
 
   // Side Projects and other info cards intentionally interleave with
@@ -666,39 +698,35 @@ export const site: SiteContent = {
   ],
 
   facts: [
-    { label: "University", value: "BYU Marriott School of Business" },
-    {
-      label: "Program",
-      value: "B.S. Business Strategic Management (Product Management emphasis)",
-    },
-    { label: "Academics", value: "GPA 3.79 · Dean's List" },
-    { label: "Graduation", value: "Class of 2028" },
     {
       label: "Languages",
-      value: "English + Japanese (2 years living in Sapporo, Japan)",
+      value: "English · Japanese (two years living in Japan)",
     },
     {
       label: "Leadership",
-      value: "Eagle Scout · Selected from 80+ peers for regional leadership role",
+      value: "Eagle Scout · Selected from 80+ peers for a regional leadership role",
     },
     {
       label: "Beyond the resume",
-      value: "1st Team All-State XC · Utah Piano Competition winner",
+      value: "First Team All-State cross-country · Utah Piano Competition winner",
     },
-    { label: "Travel", value: "15+ countries, incl. Japan, Iceland, Egypt, Thailand" },
+    {
+      label: "Travel",
+      value: "15+ countries, including Japan, Iceland, Egypt, and Thailand",
+    },
   ],
 
   stats: [
-    { value: "4,000+", label: "Junbi active users" },
-    { value: "50+", label: "Universities reached" },
-    { value: "170K+", label: "Organic views" },
-    { value: "$0.05", label: "CAC" },
+    { value: "4,400+", label: "Junbi active users" },
+    { value: "100+", label: "Universities reached" },
+    { value: "170K+", label: "Organic video views" },
+    { value: "$0.05", label: "Customer acquisition cost" },
   ],
 
   education: {
     school: "BYU Marriott School of Business",
     degree: "B.S. Business Strategic Management",
-    emphasis: "Emphasis in Product Management",
+    emphasis: "Product Management emphasis",
     graduationDate: "April 2028",
     gpa: "3.79",
     honors: ["Dean's List", "Product Management Association"],
@@ -712,22 +740,23 @@ export const site: SiteContent = {
       oneLiner:
         "AI-powered study-podcast platform converting notes and materials into custom audio lessons.",
       description:
-        "AI-powered study-podcast platform conceived, designed, and built solo. Grew to 4,000+ active users and 700+ registered accounts on a $30 budget, spread to 50+ universities, secured $2,500 in funding, and pitched Quizlet's CFO.",
+        "I solo-built Junbi, a platform that turns notes and flashcards into podcasts students can use while walking, commuting, or working out. Reached 4,400+ active users, 800+ registered accounts, and students at 100+ universities on a $30 budget.",
       problem:
-        "Students spend hours reading dense textbooks and notes without engaging audio alternatives that fit busy, on-the-go schedules.",
+        "Most study tools assume students are sitting at a desk with their eyes on a screen. I saw an opportunity to make review useful during commutes.",
       whatIBuilt:
-        "An AI study-podcast platform that transforms user study notes, slides, and documents into interactive audio lessons and review podcasts.",
-      role: "Founder & Solo Developer (Conceived, designed, engineered, launched, and marketed independently).",
-      client: "Junbi",
-      date: "2026",
+        "The entire website, app, and AI pipeline using SQL, Cursor, Supabase, Xcode, and Vercel to turn notes and flashcards into podcasts.",
+      role: "Solo Founder & Builder",
+      client: "BYU Sandbox startup incubator",
+      date: "January 2026–Present",
       metrics: [
         "4,000+ Active Users",
         "700+ Registered Accounts",
         "50+ Universities Reached",
-        "$2,500 Funding Secured",
         "$0.05 CAC",
+        "$30 Marketing Budget",
+        "$500 Local Grant",
       ],
-      techStack: ["Next.js", "Supabase", "Vercel", "Xcode / Swift", "AI Audio APIs"],
+      techStack: ["SQL", "Cursor", "Supabase", "Xcode", "Vercel"],
       url: "https://junbi.study",
       image: "/projects/junbi.png",
       imageFit: "contain",
@@ -827,27 +856,27 @@ export const site: SiteContent = {
     {
       slug: "junbi",
       eyebrow: "Case Study",
-      tagline: "Turn your Quizlets and notes into AI-generated podcasts.",
-      aboutTitle: "About the project",
+      tagline: "Making studying fit into students’ pain points",
+      aboutTitle: "",
       about: [
-        "I built Junbi because studying only worked when I was sitting at a desk. Flashcards, Quizlet sets, lecture slides — all of it assumed my hands were free and my eyes were on a screen. My real review happened on walks, at the gym, on drives, and in the ten minutes between classes. None of it counted.",
-        "Junbi turns the material you already have into an AI-generated podcast you can listen to anywhere. Drop in a Quizlet set, your notes, or a PDF, and it writes and narrates a review episode around exactly what you're trying to learn — no screen required.",
+        "I solo-built Junbi, a platform that turns notes and flashcards into podcasts students can use while walking, commuting, or working out.",
+        "I built it because I realized that podcasts are becoming more and more popular, and students like me wanted to be able to study while they couldn't look at a screen.",
       ],
       meta: [
         { label: "Role", value: "Solo Founder & Builder" },
         { label: "Built at", value: "BYU Sandbox startup incubator" },
-        { label: "Dates", value: "January 2026 - Present" },
+        { label: "Dates", value: "January 2026–Present" },
       ],
-      liveLabel: "Visit junbi.study ↗",
+      liveLabel: "Visit: junbi.study ↗",
       sections: [
         {
           number: "01",
-          title: "The problem 🎧",
+          title: "Finding the problem",
           blocks: [
             {
               body: [
-                "Every study tool I tried assumed I was at a desk. Quizlet, flashcard apps, PDF annotators — they all need your eyes and your hands. But studying isn't only a desk activity. It's a commute, a walk, a workout, a wait in line.",
-                "That gap is the whole product: audio-first review built from material you already made, for the moments you can't look at a screen.",
+                "Most study tools assume students are sitting at a desk with their eyes on a screen. I saw an opportunity to make review useful during commutes.",
+                "I built the entire website, app, and AI pipeline using SQL, Cursor, Supabase, Xcode, and Vercel.",
               ],
             },
           ],
@@ -862,25 +891,24 @@ export const site: SiteContent = {
         },
         {
           number: "02",
-          title: "Launching into silence",
+          title: "Learning from failure",
           blocks: [
             {
               body: [
-                "I launched, put up fliers, and watched signups trickle in and back out again.",
-                "I had failed. The question was, did I fail because no one wanted study podcasts, or was I just not marketing it correctly?",
-                "So I cut steps out of the flow and changed a lot: I made everything free. I made class-specific podcasts built from the student's own material, in their words, for their exam. I then targetted specific general classes, and put up fliers in those classes advertising podcasts for that class. That reframing is what finally started working.",
+                "My first launch brought in almost no sign ups. I tested whether the issue was the product or how I introduced it.",
+                "I simplified the UX, made it free, and created class-specific podcasts from students’ own material.",
+                "Running a hyper specific targeted market campaign with relevant flyers made all the difference.",
               ],
             },
           ],
         },
         {
           number: "03",
-          title: "Redesigning the whole thing",
+          title: "Redesigning around users",
           blocks: [
             {
               body: [
-                "The first interface made sense to me and to almost no one else. People signed up, poked around, and never found the thing that actually mattered.",
-                "So I rebuilt the entire UI around real user feedback — moving the core action to where people already were, cutting the steps that hadn't earned their place, and making the first useful moment impossible to miss.",
+                "People signed up but often didn’t find Junbi’s main feature. I used their feedback to rebuild the interface, move the core action into focus, and remove steps that got in the way.",
               ],
             },
           ],
@@ -897,12 +925,11 @@ export const site: SiteContent = {
         },
         {
           number: "04",
-          title: "4,000 users on $30 📈",
+          title: "Growing with a $30 budget",
           blocks: [
             {
               body: [
-                "Junbi grew to 4,000+ active users and 700+ registered accounts across 50+ universities — on a $30 marketing budget and about 20 hours of work.",
-                "Most of that came from treating distribution as part of the product. I brought on a marketing collaborator to run campus distribution, which widened the reach and helped secure a $500 local grant.",
+                "Junbi reached 4,400+ active users, 800+ registered accounts, and students at 100+ universities. I spent $30 on marketing, brought on a collaborator to lead campus distribution, and helped secure a $500 local grant.",
               ],
             },
           ],
@@ -911,8 +938,8 @@ export const site: SiteContent = {
             { value: "700+", label: "Registered accounts" },
             { value: "50+", label: "Universities reached" },
             { value: "$0.05", label: "Cost per acquisition" },
-            { value: "$30", label: "Total marketing budget" },
-            { value: "$500", label: "Local grant secured" },
+            { value: "$30", label: "Marketing budget" },
+            { value: "$500", label: "Local grant" },
           ],
         },
         {
@@ -921,8 +948,7 @@ export const site: SiteContent = {
           blocks: [
             {
               body: [
-                "Later in the build I got the chance to pitch Junbi directly to Quizlet's CFO — the company whose sets were already the front door to most of my users' study material.",
-                "I brought the product, the numbers, and a specific idea for where Junbi fit alongside what Quizlet already did. The pitch went well but Quizlet said they were busy with other projects. Then a few months later they came out with their own podcast feature. Imitation is the sincerest form of flattery, I guess.",
+                "I pitched Junbi to Quizlet’s CFO with product metrics and a proposal for how Junbi could complement Quizlet’s study tools. Quizlet passed, and a few months later, it launched its own podcast feature.",
               ],
             },
           ],
@@ -930,18 +956,12 @@ export const site: SiteContent = {
         {
           number: "06",
           title: "What I learned",
-          blocks: [
-            {
-              body: [
-                "A few things I'd tell myself before starting this.",
-              ],
-            },
-          ],
+          blocks: [],
           lessons: [
-            "Ship, then watch. My first version was built on assumptions. Every real improvement came after I stopped guessing and watched what people actually did.",
-            "Distribution is half the product. I could build fast, but Junbi only mattered once people could find it — and the $30 campaign taught me more than any feature did.",
-            "Low signups are data, not failure. The quiet launch was the most honest feedback I got, because it arrived before I knew how to ask for it.",
-            "Solo doesn't mean alone. Bringing in someone who owned distribution changed what I could build, because I stopped trying to do everything myself.",
+            "Ship, then observe. User behavior showed me where my assumptions were wrong and what to improve.",
+            "Distribution is part of the product. A focused $30 campaign taught me how much reach shapes whether a product gets used.",
+            "Treat low signups as feedback. A failed launch gave me a clear reason to test a different approach.",
+            "Bring in the right collaborator. Sharing ownership of distribution gave me more room to build.",
           ],
         },
       ],
@@ -950,11 +970,10 @@ export const site: SiteContent = {
     {
       slug: "side-projects",
       eyebrow: "Case Study",
-      tagline:
-        "Products I've built, tested, and sold alongside school, and what the numbers taught me.",
+      tagline: "Turning ideas into products, and products into real experience.",
       aboutTitle: "About the projects",
       about: [
-        "Products I've built, tested, and sold alongside school, and what the numbers taught me.",
+        "Turning ideas into products, and products into real experience.",
       ],
       meta: [
         {
@@ -1035,27 +1054,27 @@ export const site: SiteContent = {
     {
       slug: "bookends",
       eyebrow: "Case Study",
-      tagline: "Turning personal reflection into a product for growth",
-      aboutTitle: "About the project",
+      tagline: "Turning personal reflection into a product for growth.",
+      aboutTitle: "About",
+      aboutEmphasis: true,
       about: [
-        "I built Bookends to understand how I spend my time, identify unproductive habits, and become more intentional about my life. I saw an opportunity to combine journaling, task management, and AI into a single product that helps me turn reflection into action.",
-        "I designed Bookends around my own workflows, iterating on features that make daily planning easier and personal insights more actionable.",
+        "I built Bookends to connect daily planning, journaling, and AI in one place.",
+        "It helps me organize priorities, reflect on my habits, and turn those insights into action.",
       ],
       meta: [
-        { label: "Role", value: "Product Management · Product Design · Development" },
-        { label: "Tools", value: "Cursor · AI / LLMs · Vector Search" },
-        { label: "Type", value: "Personal Project" },
+        { label: "Role", value: "Product management · Product design · Development" },
+        { label: "Tools", value: "Cursor · AI / LLMs · Vector search" },
+        { label: "Type", value: "Personal project" },
       ],
       sections: [
         {
           number: "01",
-          title: "Design around real behavior",
+          title: "Designed to boost my productivity",
           blocks: [
             {
-              heading: "Make productivity actionable",
               body: [
-                "I designed Bookends around a simple insight: I'm more productive when my priorities are visible and my day has structure.",
-                "I built task groups, daily task selection, scheduling, and goal tracking to help me break larger ambitions into manageable daily actions. Rather than overwhelming myself with everything I need to do, I can focus on what matters today while keeping long-term goals in view.",
+                "I designed and built Bookends so that I could be more productive with my time.",
+                "Task groups and goal tracking help me focus on what matters today and not lose sight of bigger ambitions.",
               ],
             },
           ],
@@ -1070,13 +1089,12 @@ export const site: SiteContent = {
         },
         {
           number: "02",
-          title: "Turn journaling into insights",
+          title: "Turn journaling into auditing",
           blocks: [
             {
-              heading: "From reflection to action",
               body: [
-                "I wanted journaling to do more than document my experiences. I integrated AI features that summarize entries, identify potential time-wasting habits, and suggest practical improvements.",
-                "This transformed journaling into a feedback loop: reflect on my day, recognize patterns, and adjust my behavior. The goal wasn't simply to track productivity, but to understand how I could improve it.",
+                "I implemented an AI that reviews your journal entries and finds time wasting habits so that it can suggest changes.",
+                "This turns journaling into an audit: reflect, notice patterns, and decide what to do differently.",
               ],
             },
           ],
@@ -1092,21 +1110,13 @@ export const site: SiteContent = {
         },
         {
           number: "03",
-          title: "Give AI a memory of my life",
+          title: "Help AI connect experiences",
           blocks: [
             {
-              heading: "The challenge: connecting experiences over time",
               body: [
-                "I wanted to ask Bookends questions about my life and have it reference relevant experiences from months ago. Feeding my entire journal history into every conversation would be inefficient, while keyword search would miss entries that expressed similar ideas using different language.",
-              ],
-            },
-            {
-              heading: "Building a semantic memory system",
-              body: [
-                "I implemented a retrieval-augmented generation (RAG) pipeline using vector embeddings and similarity search.",
-                "Each journal entry is converted into a numerical representation of its meaning. When I ask a question, Bookends searches past entries for semantically similar experiences, retrieves the most relevant memories, and supplies them to the AI as context.",
-                "For example, describing a lack of focus today can surface an entry from a month ago about burnout, even if the wording is completely different.",
-                "The result is an AI that can connect past experiences to present challenges, helping me identify recurring patterns and better understand my behavior.",
+                "I wanted to be able to ask questions about my life and have Bookends answer depending on my journal entries, even when they were written months earlier.",
+                "Keyword search can miss entries that describe experiences in different words, so I built a retrieval system using vector embeddings and similarity search.",
+                "When I ask a question, Bookends retrieves relevant memories and gives them to the AI as context. An entry about burnout, for example, might help explain why I’m struggling to focus today.",
               ],
             },
           ],
@@ -1123,14 +1133,13 @@ export const site: SiteContent = {
         },
         {
           number: "04",
-          title: "Build for measurable personal growth",
+          title: "Build around my problems",
           blocks: [
             {
-              heading: "A product shaped by its user",
               body: [
-                "Bookends brings planning, journaling, goal tracking, and AI-powered reflection into one system. Building it has helped me become more productive, develop better habits, and approach my goals with greater consistency.",
-                "More importantly, this project gave me the opportunity to approach a personal problem as a product manager: identify a need, design a workflow around user behavior, prioritize useful features, and use technology to solve a problem that matters.",
-                "Bookends remains a personal project, but its success is measured by something tangible: how effectively it helps me understand myself and improve the way I live.",
+                "Bookends combines planning, journaling, goal tracking, and reflection to help me understand my habits and follow through on goals.",
+                "Building it gave me a way to practice product management end to end: identify a need, design around behavior, and build features.",
+                "It’s still a personal project. I haven’t pushed it to the public but I still value it greatly because it helps me make better decisions in my day to day life.",
               ],
             },
           ],
@@ -1145,7 +1154,17 @@ export const site: SiteContent = {
           },
         },
       ],
-      closing: caseStudyClosing,
+      closing: {
+        eyebrow: "Next",
+        title: "Let’s work together",
+        body: "I’m looking for product management internships and full-time roles where I can work close to users, make thoughtful product decisions, and ship quickly. If that’s what your team needs, I’d love to talk.",
+        links: [
+          { label: "Email me", url: "mailto:watathys@gmail.com" },
+          { label: "LinkedIn", url: "https://linkedin.com/in/thysh" },
+        ],
+        archiveLabel: "All projects",
+        archiveHref: "/",
+      },
     },
   ],
 

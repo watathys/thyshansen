@@ -34,10 +34,20 @@ export function CaseStudyHero({
         <h1 className="mt-5 text-[clamp(3rem,11vw,7rem)] leading-[0.9] font-black tracking-tight text-zinc-900">
           {name}
         </h1>
+        {study.tagline ? (
+          <p className="mt-6 max-w-2xl text-xl leading-snug text-zinc-600 sm:text-2xl">
+            {study.tagline}
+          </p>
+        ) : null}
       </Container>
 
       <div className="mt-10 sm:mt-12">
-        <CaseStudyIntro study={study} accentText={accentText} liveUrl={liveUrl} />
+        <CaseStudyIntro
+          study={study}
+          accentText={accentText}
+          liveUrl={liveUrl}
+          showTagline={false}
+        />
       </div>
     </header>
   );

@@ -238,7 +238,7 @@ export function CaseStudyOverlay({
         </motion.p>
 
         {/* Project title — shared element, off-center left. */}
-        <div className="absolute inset-y-0 left-8 z-20 flex items-center sm:left-12 lg:left-16">
+        <div className="absolute inset-y-0 left-8 z-20 flex flex-col justify-center sm:left-12 lg:left-16">
           <motion.h2
             layoutId={`project-title-${slide.slug}`}
             transition={{ layout: { duration: 0.9, ease: HERO_EASE } }}
@@ -246,6 +246,16 @@ export function CaseStudyOverlay({
           >
             {slide.title}
           </motion.h2>
+          {study?.tagline || slide.subtitle ? (
+            <motion.p
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.55, ease: HERO_EASE }}
+              className="mt-6 max-w-[32vw] text-left text-base font-normal leading-relaxed text-white/90 drop-shadow-[0_2px_12px_rgba(0,0,0,0.18)] sm:text-lg lg:text-xl"
+            >
+              {study?.tagline ?? slide.subtitle}
+            </motion.p>
+          ) : null}
         </div>
 
         {/* Media card — shared element, centered + flattened. */}
@@ -336,6 +346,7 @@ export function CaseStudyOverlay({
                   study={study}
                   accentText={theme.accentText}
                   liveUrl={project.url}
+                  showTagline={false}
                 />
               </div>
 

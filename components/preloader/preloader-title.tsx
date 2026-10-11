@@ -26,11 +26,21 @@ export function PreloaderTitle() {
             className="relative block"
           >
             <span className="text-outline block">{line}</span>
+            {/*
+             * The fill copies the outline's text and is clip-revealed on top
+             * of it. Its clip box only spans the tight `leading-[0.92]` line
+             * box, but glyph descenders (e.g. the tail of the "y") overflow
+             * roughly 0.14em below it — so a plain `inset-0` box would clip
+             * that tail and leave the bottom of the "y" unfilled. Extending
+             * the box's bottom by the same `0.12em` descender allowance the
+             * overflow wrapper above reserves (matching its `pb-[0.12em]`)
+             * keeps the whole visible glyph inside the reveal.
+             */}
             <motion.span
               data-pl="fill"
               aria-hidden="true"
               initial={{ clipPath: "inset(0% 100% 0% 0%)" }}
-              className="absolute inset-0 block text-foreground"
+              className="absolute inset-x-0 top-0 -bottom-[0.12em] block text-foreground"
             >
               {line}
             </motion.span>

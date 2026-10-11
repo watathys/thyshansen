@@ -22,6 +22,8 @@ export interface HeroSlideData {
   slug: string;
   eyebrow: string;
   title: string;
+  /** Optional one-line subheading shown under the title in the overlay hero. */
+  subtitle?: string;
   description: string;
   /** Where the title/CTA link to — a case study route or a same-page anchor. */
   href: string;
