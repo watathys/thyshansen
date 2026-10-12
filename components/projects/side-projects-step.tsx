@@ -87,16 +87,20 @@ export function SideProjectsStep({ step, accentText }: SideProjectsStepProps) {
       <h3 className="mt-2 text-xl font-bold tracking-tight text-zinc-900 sm:text-2xl">
         {step.title}
       </h3>
-      <div className="mt-3 space-y-4">
+      <ul className="mt-3 max-w-[68ch] space-y-3">
         {step.body.map((paragraph, index) => (
-          <p
+          <li
             key={index}
-            className="max-w-[68ch] text-base leading-relaxed text-zinc-600 sm:text-lg"
+            className="flex gap-3 text-base leading-relaxed text-zinc-600 sm:text-lg"
           >
-            {renderParagraph(paragraph, accentText)}
-          </p>
+            <span
+              className="mt-[0.7em] h-1.5 w-1.5 flex-none rounded-full bg-zinc-400"
+              aria-hidden="true"
+            />
+            <span>{renderParagraph(paragraph, accentText)}</span>
+          </li>
         ))}
-      </div>
+      </ul>
 
       {step.photo ? (
         <figure className="my-8 overflow-hidden rounded-xl border border-zinc-200/80 bg-zinc-100 shadow-sm">
@@ -126,16 +130,20 @@ export function SideProjectsStep({ step, accentText }: SideProjectsStepProps) {
             {step.subheading}
           </h3>
           {step.subBody ? (
-            <div className="mt-3 space-y-4">
+            <ul className="mt-3 max-w-[68ch] space-y-3">
               {step.subBody.map((paragraph, index) => (
-                <p
+                <li
                   key={index}
-                  className="max-w-[68ch] text-base leading-relaxed text-zinc-600 sm:text-lg"
+                  className="flex gap-3 text-base leading-relaxed text-zinc-600 sm:text-lg"
                 >
-                  {renderParagraph(paragraph, accentText)}
-                </p>
+                  <span
+                    className="mt-[0.7em] h-1.5 w-1.5 flex-none rounded-full bg-zinc-400"
+                    aria-hidden="true"
+                  />
+                  <span>{renderParagraph(paragraph, accentText)}</span>
+                </li>
               ))}
-            </div>
+            </ul>
           ) : null}
         </div>
       ) : null}

@@ -276,7 +276,10 @@ export interface CaseStudyMedia {
 export interface CaseStudyBlock {
   /** Optional smaller sub-heading, e.g. "Make progress visible". */
   heading?: string;
-  /** One or more first-person paragraphs. */
+  /**
+   * One or more first-person statements, rendered as a bulleted list so the
+   * whole case study stays skimmable.
+   */
   body: string[];
 }
 
@@ -594,7 +597,8 @@ export const site: SiteContent = {
           {
             title: "Building and pricing",
             body: [
-              "I compared manufacturers, production, and minimum order quantities, then found a supplier to make an initial run of 50 decks.",
+              "I compared manufacturers, production, and minimum order quantities.",
+              "I found a supplier to make an initial run of 50 decks.",
               "I calculated costs across manufacturing, shipping, and packaging, and launched the deck for $25.",
             ],
           },
@@ -653,7 +657,8 @@ export const site: SiteContent = {
           {
             title: "Start with LEGO",
             body: [
-              "I began by buying and reselling LEGO sets to test whether I could consistently find products buyers wanted. I sold 23 sets for an average of about $92 each.",
+              "I began by buying and reselling LEGO sets to test whether I could consistently find products buyers wanted.",
+              "I sold 23 sets for an average of about $92 each.",
             ],
           },
           {
@@ -661,14 +666,16 @@ export const site: SiteContent = {
             body: [
               "With Pokémon cards trending I tried to capitalize on the trend.",
               "I would buy undervalued Pokémon cards, then send them to PSA for grading.",
-              "My 16 graded cards averaged about $126 per sale, compared with about $16 for ungraded cards; my top sale was a PSA 9 Charizard for $549.99.",
+              "My 16 graded cards averaged about $126 per sale, compared with about $16 for ungraded cards.",
+              "My top sale was a PSA 9 Charizard for $549.99.",
             ],
           },
           {
             title: "Expand sourcing to Japan",
             body: [
               "I began buying secondhand items in Japan to resell in the United States.",
-              "I sold video games, figures, and collectibles. In 2024, this became my busiest category, with 50 sales.",
+              "I sold video games, figures, and collectibles.",
+              "In 2024, this became my busiest category, with 50 sales.",
             ],
           },
           {
@@ -815,7 +822,7 @@ export const site: SiteContent = {
         "Daily Narrative Generation",
       ],
       techStack: ["Next.js", "React Native", "AI Assisted Journaling", "Tailwind CSS"],
-      url: "https://genfm.app",
+      url: "https://www.genfm.app/",
       image: "/projects/bookends.png",
       imageFit: "contain",
       tags: ["AI Assisted Journaling", "Mobile & Web", "Personal Analytics"],
@@ -875,7 +882,8 @@ export const site: SiteContent = {
           blocks: [
             {
               body: [
-                "Most study tools assume students are sitting at a desk with their eyes on a screen. I saw an opportunity to make review useful during commutes.",
+                "Most study tools assume students are sitting at a desk with their eyes on a screen.",
+                "I saw an opportunity to make review useful during commutes.",
                 "I built the entire website, app, and AI pipeline using SQL, Cursor, Supabase, Xcode, and Vercel.",
               ],
             },
@@ -895,7 +903,8 @@ export const site: SiteContent = {
           blocks: [
             {
               body: [
-                "My first launch brought in almost no sign ups. I tested whether the issue was the product or how I introduced it.",
+                "My first launch brought in almost no sign ups.",
+                "I tested whether the issue was the product or how I introduced it.",
                 "I simplified the UX, made it free, and created class-specific podcasts from students’ own material.",
                 "Running a hyper specific targeted market campaign with relevant flyers made all the difference.",
               ],
@@ -908,7 +917,8 @@ export const site: SiteContent = {
           blocks: [
             {
               body: [
-                "People signed up but often didn’t find Junbi’s main feature. I used their feedback to rebuild the interface, move the core action into focus, and remove steps that got in the way.",
+                "People signed up but often didn’t find Junbi’s main feature.",
+                "I used their feedback to rebuild the interface, move the core action into focus, and remove steps that got in the way.",
               ],
             },
           ],
@@ -929,7 +939,8 @@ export const site: SiteContent = {
           blocks: [
             {
               body: [
-                "Junbi reached 4,400+ active users, 800+ registered accounts, and students at 100+ universities. I spent $30 on marketing, brought on a collaborator to lead campus distribution, and helped secure a $500 local grant.",
+                "Junbi reached 4,400+ active users, 800+ registered accounts, and students at 100+ universities off of only $30 of marketing.",
+                "I brought on a collaborator to lead campus distribution, and helped secure a $500 local grant.",
               ],
             },
           ],
@@ -948,7 +959,8 @@ export const site: SiteContent = {
           blocks: [
             {
               body: [
-                "I pitched Junbi to Quizlet’s CFO with product metrics and a proposal for how Junbi could complement Quizlet’s study tools. Quizlet passed, and a few months later, it launched its own podcast feature.",
+                "I pitched Junbi to Quizlet’s CFO with product metrics and a proposal for how Junbi could complement Quizlet’s study tools.",
+                "Quizlet passed, and a few months later, it launched its own podcast feature.",
               ],
             },
           ],
@@ -991,7 +1003,8 @@ export const site: SiteContent = {
             {
               heading: "Bring cocktail culture to dirty soda",
               body: [
-                "I saw an opportunity to make dirty soda recipes more accessible through a physical product. Inspired by cocktail recipe decks, I designed a collection of cards that made discovering and recreating drink combinations simple and fun.",
+                "I saw an opportunity to make dirty soda recipes more accessible through a physical product.",
+                "Inspired by cocktail recipe decks, I designed a collection of cards that made discovering and recreating drink combinations simple and fun.",
               ],
             },
           ],
@@ -1011,8 +1024,10 @@ export const site: SiteContent = {
             {
               heading: "Design, sourcing, and unit economics",
               body: [
-                "I designed the complete recipe deck and sourced manufacturers for both the cards and their holders. Finding the right supplier meant comparing pricing, production options, and minimum order quantities.",
-                "I ultimately found a manufacturer willing to produce an initial run of just 50 units. I calculated unit economics across manufacturing, shipping, packaging, and selling price to understand the costs and viability of the product.",
+                "I designed the complete recipe deck and sourced manufacturers for both the cards and their holders.",
+                "Finding the right supplier meant comparing pricing, production options, and minimum order quantities.",
+                "I ultimately found a manufacturer willing to produce an initial run of just 50 units.",
+                "I calculated unit economics across manufacturing, shipping, packaging, and selling price to understand the costs and viability of the product.",
                 "The finished product launched at approximately $25 per deck, available through Etsy and my own website.",
               ],
             },
@@ -1035,7 +1050,9 @@ export const site: SiteContent = {
             {
               heading: "Finding underpriced products and expanding categories",
               body: [
-                "I started Tokyo Treasures in high school during COVID. I had nothing but free time and wanted to make the most of it and earn money, so I looked for products I could buy for less than they were worth and resell. Over the next few years it grew from a single idea into three product lines, with more than $9,600 in total sales.",
+                "I started Tokyo Treasures in high school during COVID, when I had nothing but free time and wanted to make the most of it and earn money.",
+                "I looked for products I could buy for less than they were worth and resell.",
+                "Over the next few years it grew from a single idea into three product lines, with more than $9,600 in total sales.",
               ],
             },
           ],
@@ -1056,7 +1073,6 @@ export const site: SiteContent = {
       eyebrow: "Case Study",
       tagline: "Turning personal reflection into a product for growth.",
       aboutTitle: "About",
-      aboutEmphasis: true,
       about: [
         "I built Bookends to connect daily planning, journaling, and AI in one place.",
         "It helps me organize priorities, reflect on my habits, and turn those insights into action.",
@@ -1066,6 +1082,7 @@ export const site: SiteContent = {
         { label: "Tools", value: "Cursor · AI / LLMs · Vector search" },
         { label: "Type", value: "Personal project" },
       ],
+      liveLabel: "Visit: genfm.app ↗",
       sections: [
         {
           number: "01",
@@ -1115,8 +1132,10 @@ export const site: SiteContent = {
             {
               body: [
                 "I wanted to be able to ask questions about my life and have Bookends answer depending on my journal entries, even when they were written months earlier.",
-                "Keyword search can miss entries that describe experiences in different words, so I built a retrieval system using vector embeddings and similarity search.",
-                "When I ask a question, Bookends retrieves relevant memories and gives them to the AI as context. An entry about burnout, for example, might help explain why I’m struggling to focus today.",
+                "Keyword search can miss entries that describe experiences in different words.",
+                "So I built a retrieval system using vector embeddings and similarity search.",
+                "When I ask a question, Bookends retrieves relevant memories and gives them to the AI as context.",
+                "An entry about burnout, for example, might help explain why I’m struggling to focus today.",
               ],
             },
           ],
@@ -1139,7 +1158,8 @@ export const site: SiteContent = {
               body: [
                 "Bookends combines planning, journaling, goal tracking, and reflection to help me understand my habits and follow through on goals.",
                 "Building it gave me a way to practice product management end to end: identify a need, design around behavior, and build features.",
-                "It’s still a personal project. I haven’t pushed it to the public but I still value it greatly because it helps me make better decisions in my day to day life.",
+                "It’s still a personal project, and it’s now live at genfm.app.",
+                "I still value it greatly because it helps me make better decisions in my day to day life.",
               ],
             },
           ],

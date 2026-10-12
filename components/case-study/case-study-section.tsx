@@ -49,16 +49,20 @@ export function CaseStudySection({
                       {block.heading}
                     </h3>
                   ) : null}
-                  <div className="space-y-5">
-                    {block.body.map((paragraph) => (
-                      <p
-                        key={paragraph}
-                        className="text-base leading-relaxed text-zinc-600 sm:text-lg"
+                  <ul className="space-y-3">
+                    {block.body.map((item) => (
+                      <li
+                        key={item}
+                        className="flex gap-3 text-base leading-relaxed text-zinc-600 sm:text-lg"
                       >
-                        {paragraph}
-                      </p>
+                        <span
+                          className="mt-[0.7em] h-1.5 w-1.5 flex-none rounded-full bg-zinc-400"
+                          aria-hidden="true"
+                        />
+                        <span>{item}</span>
+                      </li>
                     ))}
-                  </div>
+                  </ul>
                 </div>
               ))}
             </div>
