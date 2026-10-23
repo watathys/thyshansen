@@ -16,8 +16,12 @@ import { cn } from "@/lib/utils";
  */
 export function SiteHeader() {
   const pathname = usePathname();
+  const onToriiPage = pathname === "/MakeAToriiGate";
   const onLight =
-    pathname === "/" || lightCaseStudyRoute(pathname) !== null;
+    pathname === "/" || onToriiPage || lightCaseStudyRoute(pathname) !== null;
+  // The hidden Torii Gate guide is a self-contained page — it shouldn't
+  // surface a link back into the main portfolio nav.
+  const navLinks = onToriiPage ? [] : site.navLinks;
 
   return (
     <header className="fixed inset-x-0 top-0 z-40">
@@ -35,7 +39,7 @@ export function SiteHeader() {
         </Link>
 
         <nav aria-label="Main navigation" className="flex items-center gap-6">
-          {site.navLinks.map((link) => (
+          {navLinks.map((link) => (
             <Link
               key={link.label}
               href={link.href}

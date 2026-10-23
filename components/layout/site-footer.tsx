@@ -15,7 +15,11 @@ export function SiteFooter() {
   const year = new Date().getFullYear();
   const pathname = usePathname();
   const theme = lightCaseStudyRoute(pathname);
-  const light = theme !== null;
+  // The hidden Torii Gate guide (/MakeAToriiGate) isn't a cinematic case
+  // study, so it has no CaseStudyTheme — just flip the footer to a plain
+  // light surface so it doesn't clash with that page's red/white palette.
+  const onToriiPage = pathname === "/MakeAToriiGate";
+  const light = theme !== null || onToriiPage;
 
   const linkClass = cn(
     "rounded-md transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
@@ -29,7 +33,13 @@ export function SiteFooter() {
         light ? "border-zinc-200" : "border-border",
       )}
       // Inline style wins over `bg-background`, so the dark pages are untouched.
-      style={theme ? { backgroundColor: theme.background } : undefined}
+      style={
+        theme
+          ? { backgroundColor: theme.background }
+          : onToriiPage
+            ? { backgroundColor: "#faf6ee" }
+            : undefined
+      }
     >
       <Container
         className={cn(
