@@ -10,7 +10,7 @@ import { ToriiMark } from "@/components/torii/torii-mark";
 export const metadata: Metadata = {
   title: "How to Make a Torii Gate on Your Monitor",
   description:
-    "A step-by-step paper-craft guide to building a torii gate frame for your monitor.",
+    "A step-by-step paper craft guide to building a torii gate frame for your monitor.",
   robots: {
     index: false,
     follow: false,
