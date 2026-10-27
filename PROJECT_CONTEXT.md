@@ -161,3 +161,9 @@ app/                      # routes: / , /about , /projects , /projects/[slug] (c
 - Update `site.url` in `content/site.ts` to the real deployed domain — it
   drives `metadataBase`, Open Graph tags, and `app/sitemap.ts`.
 - Recommended host: Vercel (zero-config for Next.js App Router).
+- **Analytics**: Web Analytics is wired via `@vercel/analytics/next` — a
+  single `<Analytics />` in `app/layout.tsx`. Use that entry point (not
+  `/react`) so App Router soft navigations are counted and dynamic routes
+  collapse to `/[slug]`. It only collects from a deployed Vercel build
+  (and only from Production unless preview tracking is enabled in the
+  project's Analytics settings); `next dev` never records anything.
